@@ -1,20 +1,31 @@
 #!/usr/local/opt/node/bin/node
 import * as cdk from 'aws-cdk-lib';
-import { InfraStack } from '../lib/infra-stack';
+import { MushroomError } from '../lib/mushroom-error';
+import { CloudfrontStack } from '../lib/cloudfront-stack';
+import { CertificateStack } from '../lib/certificate-stack';
+
+const londonEnv = { env: { account: process.env.CDK_DEFAULT_ACCOUNT, region: process.env.CDK_DEFAULT_REGION } };
+const nvirginiaEnv = { env: { account: process.env.CDK_DEFAULT_ACCOUNT, region: 'us-east-1' } };
+const environmentSubdomain = process.env.NPM_ENVIRONMENT == "prod" ? "" : "sandbox.";
+const rootDomain = `${environmentSubdomain}nakomis.com`;
+const domainName = `mushrooms.${environmentSubdomain}nakomis.com`
+
+if (process.env.NPM_ENVIRONMENT) {
+    console.log("Deploying to " + process.env.NPM_ENVIRONMENT);
+} else {
+    throw new MushroomError({ name: "ENV_NOT_SET_ERROR", message: "Please use `npm run deploy-prod` or `npm run deploy-sandbox`" })
+}
 
 const app = new cdk.App();
-new InfraStack(app, 'InfraStack', {
-  /* If you don't specify 'env', this stack will be environment-agnostic.
-   * Account/Region-dependent features and context lookups will not work,
-   * but a single synthesized template can be deployed anywhere. */
-
-  /* Uncomment the next line to specialize this stack for the AWS Account
-   * and Region that are implied by the current CLI configuration. */
-  // env: { account: process.env.CDK_DEFAULT_ACCOUNT, region: process.env.CDK_DEFAULT_REGION },
-
-  /* Uncomment the next line if you know exactly what Account and Region you
-   * want to deploy the stack to. */
-  // env: { account: '123456789012', region: 'us-east-1' },
-
-  /* For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html */
+const certificateStack = new CertificateStack(app, 'CertificateStack', {
+    ...nvirginiaEnv,
+    domainName: domainName,
+    rootDomain: rootDomain
+});
+const cloudfrontStack = new CloudfrontStack(app, 'CloudfrontStack', {
+    ...londonEnv,
+    certificate: certificateStack.certificate,
+    domainName: domainName,
+    rootDomain: rootDomain,
+    crossRegionReferences: true
 });
