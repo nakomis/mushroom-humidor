@@ -9,7 +9,8 @@
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk",
-    "clean": "rimraf dist",
+    "clean": "rimraf dist", 
+    "prebuild": "rimraf dist",
     "deploy-prod": "NPM_ENVIRONMENT=prod cdk deploy --profile nakom.is-prod --all --require-approval never",
     "deploy-sandbox": "NPM_ENVIRONMENT=sandbox cdk deploy --profile nakom.is-sandbox --all --require-approval never",
     "synth-prod": "NPM_ENVIRONMENT=prod cdk synth --profile nakom.is-prod --all",
@@ -19,6 +20,7 @@
     "update-dependencies": "npx -y npm-check-updates -u && npm i"
   },
   "devDependencies": {
+    "@types/aws-lambda": "^8.10.150",
     "@types/jest": "^29.5.14",
     "@types/node": "22.7.9",
     "aws-cdk": "2.1019.1",

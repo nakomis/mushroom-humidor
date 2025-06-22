@@ -3,6 +3,7 @@ import * as cdk from 'aws-cdk-lib';
 import { MushroomError } from '../lib/mushroom-error';
 import { CloudfrontStack } from '../lib/cloudfront-stack';
 import { CertificateStack } from '../lib/certificate-stack';
+import { LambdaStack } from '../lib/lambda-stack';
 
 const londonEnv = { env: { account: process.env.CDK_DEFAULT_ACCOUNT, region: process.env.CDK_DEFAULT_REGION } };
 const nvirginiaEnv = { env: { account: process.env.CDK_DEFAULT_ACCOUNT, region: 'us-east-1' } };
@@ -29,3 +30,6 @@ const cloudfrontStack = new CloudfrontStack(app, 'CloudfrontStack', {
     rootDomain: rootDomain,
     crossRegionReferences: true
 });
+const lambdaStack = new LambdaStack(app, 'LambdaStack', {
+    ...londonEnv
+})

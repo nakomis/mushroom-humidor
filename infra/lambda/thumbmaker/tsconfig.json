@@ -29,6 +29,5 @@
     "node_modules",
     "cdk.out",
     "dist",
-    "lambda"
   ]
 }
