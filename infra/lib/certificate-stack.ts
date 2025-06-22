@@ -10,6 +10,7 @@ export interface CertificateStackProps extends cdk.StackProps {
 
 export class CertificateStack extends cdk.Stack {
     readonly certificate: cm.Certificate;
+    readonly authCertificate: cm.Certificate;
     
     constructor(scope: Construct, id: string, props: CertificateStackProps) {
         super(scope, id, props);
@@ -20,6 +21,11 @@ export class CertificateStack extends cdk.Stack {
 
         this.certificate = new cm.Certificate(this, "MushroomCert", {
             domainName: props.domainName,
+            validation: cm.CertificateValidation.fromDns(hostedZone)
+        });
+
+        this.authCertificate = new cm.Certificate(this, "MushroomAuthCert", {
+            domainName: `auth.${props.domainName}`,
             validation: cm.CertificateValidation.fromDns(hostedZone)
         });
     }

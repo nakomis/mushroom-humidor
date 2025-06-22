@@ -8,7 +8,7 @@ import * as iam from 'aws-cdk-lib/aws-iam';
 
 
 export interface IoTStackProps extends cdk.StackProps {
-    table: dynamodb.Table;
+    table: dynamodb.ITable;
 }
 
 export class IoTStack extends cdk.Stack {
