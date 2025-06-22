@@ -7,9 +7,9 @@ function App() {
     const auth = useAuth();
 
     const signOutRedirect = () => {
-        const clientId = "40f6diqtkupliql4eimogdrlks";
+        const clientId = "b8rttvob8pp6inqhdjf471de";
         const logoutUri = "https://mushrooms.sandbox.nakomis.com";
-        const cognitoDomain = "https://auth.mushrooms.sandbox.nakomis.com.auth.eu-west-2.amazoncognito.com";
+        const cognitoDomain = "https://auth.mushrooms.sandbox.nakomis.com";
         window.location.href = `${cognitoDomain}/logout?client_id=${clientId}&logout_uri=${encodeURIComponent(logoutUri)}`;
     };
 
@@ -27,19 +27,18 @@ function App() {
                 <header className="App-header">
                     <img src={logo} className="App-logo" alt="logo" />
                     <p>
-                        Mustroom Humidor
+                        Mushroom Humidor
                     </p>
-                    <a
-                        className="App-link"
-                        href="https://reactjs.org"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        Authenticated as {auth.user?.profile.email}
-                        Or: {JSON.stringify(auth.user)}
-                    </a>
+                    <p>
+                        Authenticated as: <i>{auth.user?.profile.email}</i><br></br>
+                        Username: <i>{auth.user?.profile['cognito:username'] as string}</i><br></br>
+                    </p>
+                    <button onClick={() => {
+                        auth.removeUser();
+                        signOutRedirect()
+                    }}>Sign out</button>
                 </header>
-            </div>
+            </div >
         );
     }
 

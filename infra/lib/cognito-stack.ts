@@ -39,6 +39,7 @@ export class CognitoStack extends cdk.Stack {
             generateSecret: false,
             oAuth: {
                 callbackUrls: [`https://${props.domainName}`],
+                logoutUrls: [`https://${props.domainName}`]
             },
         });
 
