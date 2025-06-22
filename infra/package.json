@@ -9,7 +9,7 @@
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk",
-    "clean": "rimraf dist", 
+    "clean": "rimraf dist",
     "prebuild": "rimraf dist",
     "deploy-prod": "NPM_ENVIRONMENT=prod cdk deploy --profile nakom.is-prod --all --require-approval never",
     "deploy-sandbox": "NPM_ENVIRONMENT=sandbox cdk deploy --profile nakom.is-sandbox --all --require-approval never",
@@ -32,6 +32,7 @@
   },
   "dependencies": {
     "aws-cdk-lib": "2.201.0",
+    "cdk-iot-core-certificates-v3": "^0.0.14",
     "constructs": "^10.0.0"
   }
 }

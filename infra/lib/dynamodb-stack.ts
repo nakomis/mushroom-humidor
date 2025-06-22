@@ -1,0 +1,26 @@
+import * as cdk from 'aws-cdk-lib';
+import { RemovalPolicy } from 'aws-cdk-lib';
+import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
+import { Construct } from 'constructs';
+
+
+export interface DynamodbStackProps extends cdk.StackProps {
+}
+
+export class DynamodbStack extends cdk.Stack {
+    readonly table: dynamodb.Table;
+
+    private readonly prod = process.env.NPM_ENVIRONMENT == "prod";
+
+    constructor(scope: Construct, id: string, props: DynamodbStackProps) {
+        super(scope, id, props);
+
+        this.table = new dynamodb.Table(this, 'MushroomTable', {
+            tableName: this.prod ? 'MushroomTelemetry' : 'MushrooTelemetry',
+            partitionKey: { name: 'deviceId', type: dynamodb.AttributeType.STRING },
+            sortKey: { name: 'timestamp', type: dynamodb.AttributeType.STRING },
+            removalPolicy: RemovalPolicy.RETAIN,
+            billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
+        });
+    }
+}

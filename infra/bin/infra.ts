@@ -4,6 +4,8 @@ import { MushroomError } from '../lib/mushroom-error';
 import { CloudfrontStack } from '../lib/cloudfront-stack';
 import { CertificateStack } from '../lib/certificate-stack';
 import { LambdaStack } from '../lib/lambda-stack';
+import { DynamodbStack } from '../lib/dynamodb-stack';
+import { IoTStack } from '../lib/iot-stack';
 
 const londonEnv = { env: { account: process.env.CDK_DEFAULT_ACCOUNT, region: process.env.CDK_DEFAULT_REGION } };
 const nvirginiaEnv = { env: { account: process.env.CDK_DEFAULT_ACCOUNT, region: 'us-east-1' } };
@@ -32,4 +34,10 @@ const cloudfrontStack = new CloudfrontStack(app, 'CloudfrontStack', {
 });
 const lambdaStack = new LambdaStack(app, 'LambdaStack', {
     ...londonEnv
-})
+});
+const dynamodbStack = new DynamodbStack(app, 'DynamodbStack', {
+    ...londonEnv
+});
+const iotStack = new IoTStack(app, 'IoTStack', {
+    ...londonEnv
+});
