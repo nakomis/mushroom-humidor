@@ -1,0 +1,1 @@
+npm run build && cd build && aws s3 sync . s3://cloudfrontstack-mushroombucketaf4c3305-r1edystkytlm --profile nakom.is-sandbox && cd -
