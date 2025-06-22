@@ -39,5 +39,6 @@ const dynamodbStack = new DynamodbStack(app, 'DynamodbStack', {
     ...londonEnv
 });
 const iotStack = new IoTStack(app, 'IoTStack', {
-    ...londonEnv
+    ...londonEnv,
+    table: dynamodbStack.table
 });

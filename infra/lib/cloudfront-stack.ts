@@ -26,10 +26,11 @@ export class CloudfrontStack extends cdk.Stack {
             encryption: s3.BucketEncryption.S3_MANAGED,
             enforceSSL: true,
             versioned: true,
-            removalPolicy: RemovalPolicy.DESTROY,
+            removalPolicy: RemovalPolicy.RETAIN,
         });
 
         this.distribution = new cf.Distribution(this, "MushroomDistribution", {
+            comment: 'Mushroom Humidor Telemetry Distribution',
             defaultBehavior: {
                 origin: S3BucketOrigin.withOriginAccessControl(this.bucket),
                 viewerProtocolPolicy: cf.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,

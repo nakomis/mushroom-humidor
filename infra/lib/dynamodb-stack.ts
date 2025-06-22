@@ -16,11 +16,12 @@ export class DynamodbStack extends cdk.Stack {
         super(scope, id, props);
 
         this.table = new dynamodb.Table(this, 'MushroomTable', {
-            tableName: this.prod ? 'MushroomTelemetry' : 'MushrooTelemetry',
+            tableName: this.prod ? 'MushroomTelemetry' : 'MushroomTelemetry',
             partitionKey: { name: 'deviceId', type: dynamodb.AttributeType.STRING },
             sortKey: { name: 'timestamp', type: dynamodb.AttributeType.STRING },
             removalPolicy: RemovalPolicy.RETAIN,
             billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
+            timeToLiveAttribute: 'ttl',
         });
     }
 }

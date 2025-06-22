@@ -2,14 +2,16 @@ import * as cdk from 'aws-cdk-lib';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import { Construct } from 'constructs';
 import { ThingWithCert } from 'cdk-iot-core-certificates-v3';
+import * as iot from 'aws-cdk-lib/aws-iot';
+import * as iam from 'aws-cdk-lib/aws-iam';
 
 
 
 export interface IoTStackProps extends cdk.StackProps {
+    table: dynamodb.Table;
 }
 
 export class IoTStack extends cdk.Stack {
-    readonly table: dynamodb.Table;
 
     private readonly prod = process.env.NPM_ENVIRONMENT == "prod";
 
@@ -21,5 +23,31 @@ export class IoTStack extends cdk.Stack {
             saveToParamStore: true,
             paramPrefix: 'Mushroom',
         });
+
+        const tableRole = new iam.Role(this, 'IoTRuleDynamoDBRole', {
+            assumedBy: new iam.ServicePrincipal('iot.amazonaws.com'),
+        });
+        props.table.grantWriteData(tableRole);
+
+        // IoT Rule: send all messages from this device to DynamoDB
+        new iot.CfnTopicRule(this, 'MushroomThingToDynamoDB', {
+            topicRulePayload: {
+                sql: `SELECT * FROM 'MushroomThing/telemetry'`, 
+                actions: [
+                    {
+                        dynamoDBv2: {
+                            putItem: {
+                                tableName: props.table.tableName,
+                            },
+                            roleArn: tableRole.roleArn,
+                        }
+                    }
+                ],
+                ruleDisabled: false,
+            }
+        });
+
+
     }
+
 }
