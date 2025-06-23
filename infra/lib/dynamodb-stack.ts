@@ -15,12 +15,9 @@ export class DynamodbStack extends cdk.Stack {
     constructor(scope: Construct, id: string, props: DynamodbStackProps) {
         super(scope, id, props);
 
-        const importTable = dynamodb.Table.fromTableName(this, 'MushroomTelemetryTable', this.prod ? 'MushroomTelemetry' : 'MushroomTelemetry');
-        if (importTable) {
-            console.log(`Using existing table: ${importTable.tableName}`);
-            this.table = importTable;
-            return;
-        } else {
+        const importTable = dynamodb.TableV2.fromTableName(this, 'ExistingTable', 'MushroomTelemetry');
+        if (importTable.tableId === undefined) {
+            console.log('Creating new DynamoDB table: MushroomTelemetry');
             this.table = new dynamodb.Table(this, 'MushroomTable', {
                 tableName: this.prod ? 'MushroomTelemetry' : 'MushroomTelemetry',
                 partitionKey: { name: 'deviceId', type: dynamodb.AttributeType.STRING },
@@ -29,6 +26,11 @@ export class DynamodbStack extends cdk.Stack {
                 billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
                 timeToLiveAttribute: 'ttl',
             });
+        } else {
+            console.log(`Using existing DynamoDB table: ${importTable.tableName}`);
+            console.log(importTable);
+            this.table = importTable;
+            return;
         }
     }
 }
