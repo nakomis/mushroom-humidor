@@ -1,0 +1,15 @@
+{
+    "env": "<ENV>",
+    "aws": {
+        "region": "<REGION>",
+        "tableName": "<TABLE_NAME>"
+    },
+    "cognito": {
+        "authority": "<AUTHORITY>",
+        "userPoolId": "<USER_POOL_ID>",
+        "userPoolClientId": "<USER_POOL_CLIENT_ID>",
+        "redirectUri": "<REDIRECT_URI>",
+        "logoutUri": "<LOGOUT_URI>",
+        "identityPoolId": "<IDENTITY_POOL_ID>"
+    }
+}

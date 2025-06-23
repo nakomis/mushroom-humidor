@@ -94,6 +94,7 @@ const App: React.FC = () => {
     }, [auth.isAuthenticated, auth.user?.id_token]);
 
     const signOutRedirect = () => {
+        // TODO: Can I just call auth.signoutRedirect()?
         const clientId = "b8rttvob8pp6inqhdjf471de";
         const logoutUri = "https://mushrooms.sandbox.nakomis.com/logout";
         const cognitoDomain = "https://auth.mushrooms.sandbox.nakomis.com";
