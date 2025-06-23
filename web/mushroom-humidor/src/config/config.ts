@@ -9,12 +9,13 @@ export interface MushroomConfig {
     authority: string;
     userPoolId: string;
     userPoolClientId: string;
+    cognitoDomain: string;
     redirectUri: string;
     logoutUri: string;
     identityPoolId: string;
   };
 }
 
-let Config: MushroomConfig = require('.config.json');
+let Config: MushroomConfig = require('./config.json');
 
 export default Config;

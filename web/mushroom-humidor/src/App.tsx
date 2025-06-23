@@ -10,6 +10,39 @@ import {
     Credentials as AWSCredentials,
 } from "@aws-sdk/client-cognito-identity";
 import { DynamoDBClient, ScanCommand, ScanCommandOutput } from '@aws-sdk/client-dynamodb';
+import Config from './config/config';
+
+function getTable(items: any[]) {
+    if (items.length === 0) {
+        return <p>No items found in the table.</p>;
+    }
+    return (
+        <table className="table table-bordered table-hover table-dark">
+            <thead>
+                <tr>
+                    {
+                        Object.keys(items[0]).map((key) => (
+                            <th>{key}</th>
+                        ))
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                {
+                    items.map((item, index) => (
+                        <tr>
+                            {
+                                Object.values(item).map((value: any, i) => (
+                                    <td key={i}>{value.S}</td>
+                                ))
+                            }
+                        </tr>
+                    ))
+                }
+            </tbody>
+        </table>
+    );
+}
 
 export async function getAWSCredentialsFromIdToken(
     region: string,
@@ -18,10 +51,7 @@ export async function getAWSCredentialsFromIdToken(
     idToken: string
 ): Promise<AWSCredentials | undefined> {
     const client = new CognitoIdentityClient({ region });
-
-    // The Logins key must match this format:
-    //   const providerName = `cognito-idp.${region}.amazonaws.com/${userPoolId}`;
-    const providerName = `cognito-idp.eu-west-2.amazonaws.com/eu-west-2_B1QPS8ffN`;
+    const providerName = `cognito-idp.${Config.aws.region}.amazonaws.com/${Config.cognito.userPoolId}`;
 
     // Step 1: Get the Cognito Identity ID
     const getIdCommand = new GetIdCommand({
@@ -53,16 +83,16 @@ const App: React.FC = () => {
     useEffect(() => {
         const fetchCreds = async () => {
             const credentials = await getAWSCredentialsFromIdToken(
-                "eu-west-2",
-                "eu-west-2:0708bfa6-b2b9-4f0a-93c7-037ec3fa3504",
-                "eu-west-2_B1QPS8ffN",
-                `${auth.user?.id_token}` // Ensure this is the correct token
+                Config.aws.region,
+                Config.cognito.identityPoolId,
+                Config.cognito.userPoolId,
+                auth.user?.id_token || ''
             );
             setCreds(credentials ?? null);
             if (credentials) {
 
                 const client = new DynamoDBClient({
-                    region: "eu-west-2",
+                    region: Config.aws.region,
                     credentials: {
                         accessKeyId: credentials.AccessKeyId!,
                         secretAccessKey: credentials.SecretKey!,
@@ -70,7 +100,7 @@ const App: React.FC = () => {
                     },
                 });
 
-                const command = new ScanCommand({ TableName: 'MushroomTelemetry' });
+                const command = new ScanCommand({ TableName: Config.aws.tableName });
                 try {
                     const result: ScanCommandOutput = await client.send(command);
                     setItems(result.Items ?? []);
@@ -95,10 +125,9 @@ const App: React.FC = () => {
 
     const signOutRedirect = () => {
         // TODO: Can I just call auth.signoutRedirect()?
-        const clientId = "b8rttvob8pp6inqhdjf471de";
-        const logoutUri = "https://mushrooms.sandbox.nakomis.com/logout";
-        const cognitoDomain = "https://auth.mushrooms.sandbox.nakomis.com";
-        window.location.href = `${cognitoDomain}/logout?client_id=${clientId}&logout_uri=${encodeURIComponent(logoutUri)}`;
+        const clientId = Config.cognito;
+        const logoutUri = Config.cognito.logoutUri;
+        window.location.href = `https://${Config.cognito.cognitoDomain}/logout?client_id=${Config.cognito.userPoolClientId}&logout_uri=${encodeURIComponent(Config.cognito.logoutUri)}`;
     };
 
     if (auth.isLoading) {
@@ -133,26 +162,20 @@ const App: React.FC = () => {
                         Authenticated as: <i>{auth.user?.profile.email}</i><br></br>
                         Username: <i>{auth.user?.profile['cognito:username'] as string}</i><br></br>
                     </p>
-                    <button type="button" className="btn btn-primary" onClick={() => {
-                        auth.removeUser();
-                        signOutRedirect()
-                    }}>Sign out</button>
                     {auth.isAuthenticated ? (
                         <div className="App-credentials">
-                            <h3>AWS Credentials</h3>
-                            {creds ? (
-                                <div>
-                                    <pre>{JSON.stringify(creds, null, 2)}</pre>
-                                    <pre>{JSON.stringify(items, null, 2)}</pre>
-                                </div>
-                            ) : (
-                                <p>Loading AWS credentials...</p>
-                            )}
-
+                            {creds ? getTable(items)
+                                : (
+                                    <p>Loading AWS credentials...</p>
+                                )}
                         </div>
                     ) : (
                         <p>You are not authenticated.</p>
                     )}
+                    <button type="button" className="btn btn-primary" onClick={() => {
+                        auth.removeUser();
+                        signOutRedirect()
+                    }}>Sign out</button>
                 </header>
             </div >
         );

@@ -38,14 +38,17 @@ case $ENV in
     prod)
         setValue redirectUri "https://mushrooms.nakomis.com/loggedin"
         setValue logoutUri "https://mushrooms.nakomis.com/logout"
+        setValue cognitoDomain "auth.mushrooms.nakomis.com"
         ;;
     sandbox)
         setValue redirectUri "https://mushrooms.sandbox.nakomis.com/loggedin"
         setValue logoutUri "https://mushrooms.sandbox.nakomis.com/logout"
+        setValue cognitoDomain "auth.mushrooms.sandbox.nakomis.com"
         ;;
     localhost)
         setValue redirectUri "http://localhost:3000/loggedin"
         setValue logoutUri "http://localhost:3000/logout"
+        setValue cognitoDomain "auth.mushrooms.sandbox.nakomis.com"
         ;;
     *)
         echo "Unknown environment: $ENV"
@@ -54,3 +57,7 @@ case $ENV in
 esac
 
 IDENTITY_POOL_ID=$(aws cognito-identity list-identity-pools --max-results 60 | jq -r '.IdentityPools[] | select(.IdentityPoolName == "MushroomIdentityPool") | .IdentityPoolId')
+
+setValue identityPoolId $IDENTITY_POOL_ID
+
+rm -f $SCRIPT_DIR/../src/config/config.json.bk

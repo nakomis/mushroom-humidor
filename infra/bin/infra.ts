@@ -50,5 +50,6 @@ const cognitoStack = new CognitoStack(app, 'CognitoStack', {
     domainName: domainName,
     authDomainName: authDomainName,
     authCertificateArn: certificateStack.authCertificate,
-    crossRegionReferences: true
+    crossRegionReferences: true,
+    database: dynamodbStack.table,
 });
