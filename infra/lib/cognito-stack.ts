@@ -10,6 +10,7 @@ export interface CognitoStackProps extends cdk.StackProps {
     authDomainName: string;
     domainName: string;
     authCertificateArn: cm.Certificate;
+    database: cdk.aws_dynamodb.Table;
 }
 
 export class CognitoStack extends cdk.Stack {
@@ -61,6 +62,35 @@ export class CognitoStack extends cdk.Stack {
             ],
         });
 
+        const identityPool = new cognito.CfnIdentityPool(this, 'IdentityPool', {
+            identityPoolName: 'MushroomIdentityPool',
+            allowUnauthenticatedIdentities: false,
+            cognitoIdentityProviders: [{
+                clientId: this.userPoolClient.userPoolClientId,
+                providerName: this.userPool.userPoolProviderName,
+            }],
+        });
+
+        const databaseReadRole = new cdk.aws_iam.Role(this, 'MushroomDatabaseReadRole', {
+            assumedBy: new cdk.aws_iam.FederatedPrincipal(
+                'cognito-identity.amazonaws.com',
+                {
+                    'StringEquals': { 'cognito-identity.amazonaws.com:aud': identityPool.ref },
+                    'ForAnyValue:StringLike': { 'cognito-identity.amazonaws.com:amr': 'authenticated' }
+                },
+                'sts:AssumeRoleWithWebIdentity'
+            ),
+        });
+
+        props.database.grantReadData(databaseReadRole);
+
+        new cognito.CfnIdentityPoolRoleAttachment(this, 'IdentityPoolRoleAttachment', {
+            identityPoolId: identityPool.ref,
+            roles: {
+                authenticated: databaseReadRole,
+            },
+        });
+
         new cognito.CfnManagedLoginBranding(this, 'ManagedLoginBranding', {
             userPoolId: this.userPool.userPoolId,
             clientId: this.userPoolClient.userPoolClientId,
@@ -82,11 +112,5 @@ export class CognitoStack extends cdk.Stack {
             zone: hostedZone,
             target: route53.RecordTarget.fromAlias(new targets.UserPoolDomainTarget(userPoolDomain))
         });
-
-        // // Assign a UI customization (style) to the custom domain
-        // new cognito.CfnUserPoolUICustomizationAttachment(this, 'UserPoolUICustomization', {
-        //     userPoolId: this.userPool.userPoolId,
-        //     clientId: this.userPoolClient.userPoolClientId,
-        // });
     }
 }
