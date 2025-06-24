@@ -5,12 +5,15 @@ import { Construct } from 'constructs';
 
 export interface CertificateStackProps extends cdk.StackProps { 
     domainName: string,
-    rootDomain: string
+    rootDomain: string,
+    authDomain: string,
+    apiDomain: string,
 }
 
 export class CertificateStack extends cdk.Stack {
     readonly certificate: cm.Certificate;
     readonly authCertificate: cm.Certificate;
+    readonly apiCert: cm.Certificate;
     
     constructor(scope: Construct, id: string, props: CertificateStackProps) {
         super(scope, id, props);
@@ -25,7 +28,7 @@ export class CertificateStack extends cdk.Stack {
         });
 
         this.authCertificate = new cm.Certificate(this, "MushroomAuthCert", {
-            domainName: `auth.${props.domainName}`,
+            domainName: props.authDomain,
             validation: cm.CertificateValidation.fromDns(hostedZone)
         });
     }

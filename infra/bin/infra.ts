@@ -7,13 +7,15 @@ import { LambdaStack } from '../lib/lambda-stack';
 import { DynamodbStack } from '../lib/dynamodb-stack';
 import { IoTStack } from '../lib/iot-stack';
 import { CognitoStack } from '../lib/cognito-stack';
+import { ApiGatewayStack } from '../lib/api-gateway-stack';
 
 const londonEnv = { env: { account: process.env.CDK_DEFAULT_ACCOUNT, region: process.env.CDK_DEFAULT_REGION } };
 const nvirginiaEnv = { env: { account: process.env.CDK_DEFAULT_ACCOUNT, region: 'us-east-1' } };
 const environmentSubdomain = process.env.NPM_ENVIRONMENT == "prod" ? "" : "sandbox.";
 const rootDomain = `${environmentSubdomain}nakomis.com`;
 const domainName = `mushrooms.${environmentSubdomain}nakomis.com`
-const authDomainName = `auth.${domainName}`;
+const apiDomain = `api.${domainName}`;
+const authDomain = `auth.${domainName}`;
 
 if (process.env.NPM_ENVIRONMENT) {
     console.log("Deploying to " + process.env.NPM_ENVIRONMENT);
@@ -25,7 +27,9 @@ const app = new cdk.App();
 const certificateStack = new CertificateStack(app, 'MushroomCertificateStack', {
     ...nvirginiaEnv,
     domainName: domainName,
-    rootDomain: rootDomain
+    rootDomain: rootDomain,
+    authDomain: authDomain,
+    apiDomain: apiDomain,
 });
 const cloudfrontStack = new CloudfrontStack(app, 'MushroomCloudfrontStack', {
     ...londonEnv,
@@ -34,22 +38,29 @@ const cloudfrontStack = new CloudfrontStack(app, 'MushroomCloudfrontStack', {
     rootDomain: rootDomain,
     crossRegionReferences: true
 });
-const lambdaStack = new LambdaStack(app, 'MushroomLambdaStack', {
-    ...londonEnv
-});
 const dynamodbStack = new DynamodbStack(app, 'MushroomDynamodbStack', {
     ...londonEnv
 });
+const lambdaStack = new LambdaStack(app, 'MushroomLambdaStack', {
+    commandTable: dynamodbStack.commandTable,
+    ...londonEnv
+});
+const apiGatewayStack = new ApiGatewayStack(app, 'MushroomApiGatewayStack', {
+    ...londonEnv,
+    rootDomain: rootDomain,
+    domainName: apiDomain,
+    commandProcessor: lambdaStack.commandProcessor
+});
 const iotStack = new IoTStack(app, 'MushroomIoTStack', {
     ...londonEnv,
-    table: dynamodbStack.table
+    table: dynamodbStack.telemetryTable
 });
 const cognitoStack = new CognitoStack(app, 'MushroomCognitoStack', {
     ...londonEnv,
     rootDomain: rootDomain,
     domainName: domainName,
-    authDomainName: authDomainName,
+    authDomainName: authDomain,
     authCertificateArn: certificateStack.authCertificate,
     crossRegionReferences: true,
-    database: dynamodbStack.table,
+    database: dynamodbStack.telemetryTable,
 });
