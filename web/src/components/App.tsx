@@ -66,13 +66,7 @@ const App: React.FC = () => {
     const auth = useAuth();
     const [items, setItems] = React.useState<any[]>([]);
     const [creds, setCreds] = React.useState<AWSCredentials | null>(null);
-    const [tabId, setTabId] = React.useState(() => {
-        const hash = window.location.hash.substr(1);
-        if (hash === '') {
-            return 0;
-        }
-        return parseInt(hash);
-    });
+    const [tabId, setTabId] = React.useState(0);
 
     useEffect(() => {
         if (!auth.user?.id_token) {
@@ -119,7 +113,6 @@ const App: React.FC = () => {
 
     const onTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
         setTabId(newValue);
-        window.location.hash = `${newValue}`;
     };
 
     const overrides = {
