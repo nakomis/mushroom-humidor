@@ -16,9 +16,12 @@ import Box from '@mui/material/Box';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Page from './pages/Page';
-import { AppBar, Paper } from '@mui/material';
+import { AppBar } from '@mui/material';
 import { createTheme, ThemeProvider, styled } from "@mui/material/styles";
 import { blue, green } from "@mui/material/colors";
+import TelemetryPage from './pages/TelemetryPage';
+import CommandPage from './pages/CommandPage';
+import SettingsPage from './pages/SettingsPage';
 
 
 /*
@@ -27,95 +30,6 @@ import { blue, green } from "@mui/material/colors";
     It's an open-source project, so feel free to contribute or use it as you like!
 */
 
-function getTelemetryTable(items: any[]) {
-    if (items.length === 0) {
-        return <p>No items found in the table.</p>;
-    }
-    return (
-        <table className="table table-bordered table-hover table-dark">
-            <thead>
-                <tr>
-                    <th scope='col'>
-                        Device
-                    </th>
-                    <th scope='col'>
-                        Temp
-                    </th>
-                    <th scope='col'>
-                        Humidity
-                    </th>
-                    <th scope='col'>
-                        Timestamp
-                    </th>
-                    <th scope='col'>
-                        TTL
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                {
-                    items.map((item, index) => (
-                        <tr>
-                            <td key={index}>{item.deviceId.S}</td>
-                            <td>{item.temperature.S}</td>
-                            <td>{item.humidity.S}</td>
-                            <td>{item.timestamp.S}</td>
-                            <td>{
-                                item.ttl && item.ttl.N ? new Date(Number(item.ttl.N) * 1000).toDateString() :
-                                    "immortal"
-                            }</td>
-                        </tr>
-                    ))
-                }
-            </tbody>
-        </table>
-    );
-}
-
-function getCommandTable(items: any[]) {
-    if (items.length === 0) {
-        return <p>No items found in the table.</p>;
-    }
-    return (
-        <table className="table table-bordered table-hover table-dark">
-            <thead>
-                <tr>
-                    <th scope='col'>
-                        Device
-                    </th>
-                    <th scope='col'>
-                        Command Type
-                    </th>
-                    <th scope='col'>
-                        Action
-                    </th>
-                    <th scope='col'>
-                        Timestamp
-                    </th>
-                    <th scope='col'>
-                        TTL
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                {
-                    items.map((item, index) => (
-                        <tr>
-                            <td key={index}>{item.deviceId.S}</td>
-                            <td>{item.temperature.S}</td>
-                            <td>{item.humidity.S}</td>
-                            <td>{item.timestamp.S}</td>
-                            <td>{
-                                item.ttl && item.ttl.N ? new Date(Number(item.ttl.N) * 1000).toDateString() :
-                                    "immortal"
-                            }</td>
-                        </tr>
-                    ))
-                }
-            </tbody>
-        </table>
-    );
-}
 
 export async function getAWSCredentialsFromIdToken(
     region: string,
@@ -314,45 +228,26 @@ const App: React.FC = () => {
                                 </Box>
                             </AppBar>
                             <Box sx={{ width: '100%' }}>
-                                <Page tabId={tabId} index={0}>
-                                    <div className="page">
-                                        <h1>Telemetry</h1>
-                                        {creds ? getTelemetryTable(items) : <p>Loading AWS credentials...</p>}
-                                    </div>
-                                </Page>
-                                <Page tabId={tabId} index={1}>
-                                    <div className="page">
-                                        <h1>Commands</h1>
-                                        {creds ? getCommandTable(items) : <p>Loading AWS credentials...</p>}
-                                    </div>
-                                </Page>
-                                <Page tabId={tabId} index={2}>
-                                    <div className="page">
-                                        <h1>Settings</h1>
-                                        <p>This is the settings page.</p>
-                                    </div>
-                                </Page>
+                                <TelemetryPage tabId={tabId} index={0} creds={creds} items={items}></TelemetryPage>
+                                <CommandPage tabId={tabId} index={1} creds={creds} items={items}></CommandPage>
+                                <SettingsPage tabId={tabId} index={2} creds={creds}></SettingsPage>
                             </Box>
                         </ThemeProvider>
 
-                        <img src={logo} className="App-logo" alt="logo" />
+
                         <p>
                             Mushroom Humidor
                         </p>
                         {auth.isAuthenticated ? (
                             <div className="App-credentials">
-                                {creds ? getTelemetryTable(items)
+                                {/* {creds ? getTelemetryTable(items)
                                     : (
                                         <p>Loading AWS credentials...</p>
-                                    )}
+                                    )} */}
                             </div>
                         ) : (
                             <p>You are not authenticated.</p>
                         )}
-                        <button type="button" className="btn btn-primary" onClick={() => {
-                            auth.removeUser();
-                            signOutRedirect()
-                        }}>Sign out</button>
                     </header>
                 </div >
             </div>
