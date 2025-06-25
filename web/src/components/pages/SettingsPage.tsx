@@ -1,4 +1,3 @@
-import { ReactNode } from "react";
 import Page, { PageProps } from "./Page";
 import {
     Credentials as AWSCredentials,

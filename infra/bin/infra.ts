@@ -62,5 +62,6 @@ const cognitoStack = new CognitoStack(app, 'MushroomCognitoStack', {
     authDomainName: authDomain,
     authCertificateArn: certificateStack.authCertificate,
     crossRegionReferences: true,
-    database: dynamodbStack.telemetryTable,
+    commandDatabase: dynamodbStack.commandTable,
+    telemetryDatabase: dynamodbStack.telemetryTable,
 });

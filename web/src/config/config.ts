@@ -3,7 +3,8 @@ export interface MushroomConfig {
   env: string;
   aws: {
     region: string;
-    tableName: string;
+    telemetryTableName: string;
+    commandTableName: string;
   };
   cognito: {
     authority: string;

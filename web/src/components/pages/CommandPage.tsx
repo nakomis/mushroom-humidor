@@ -1,15 +1,17 @@
-import { ReactNode } from "react";
 import Page, { PageProps } from "./Page";
 import {
     Credentials as AWSCredentials,
 } from "@aws-sdk/client-cognito-identity";
+import { CommandRecord } from "../../dto/CommandRecord";
+import { useEffect, useState } from "react";
+import { getCommandRecords } from "../../services/CommandService";
 
 type CommandProps = PageProps & {
     creds: AWSCredentials | null;
     items: any[];
 };
 
-function getCommandTable(items: any[]) {
+function getCommandTable(items: CommandRecord[]) {
     if (items.length === 0) {
         return <p>No items found in the table.</p>;
     }
@@ -37,14 +39,13 @@ function getCommandTable(items: any[]) {
             <tbody>
                 {
                     items.map((item, index) => (
-                        <tr>
-                            <td key={index}>{item.deviceId.S}</td>
-                            <td>{item.temperature.S}</td>
-                            <td>{item.humidity.S}</td>
-                            <td>{item.timestamp.S}</td>
+                        <tr key={item.deviceId + '-' + item.timestamp}>
+                            <td key={index}>{item.deviceId}</td>
+                            <td>{item.commandType}</td>
+                            <td>{item.action}</td>
+                            <td>{item.timestamp}</td>
                             <td>{
-                                item.ttl && item.ttl.N ? new Date(Number(item.ttl.N) * 1000).toDateString() :
-                                    "immortal"
+                                item.ttl ? item.ttl : "immortal"
                             }</td>
                         </tr>
                     ))
@@ -55,17 +56,36 @@ function getCommandTable(items: any[]) {
 }
 
 const CommandPage = (props: CommandProps) => {
+    const [commandRecords, setCommandRecords] = useState([] as CommandRecord[]);
+    useEffect(() => {
+        const fetchRecords = async () => {
+            const records = await getCommandRecords(props.creds!!);
+            setCommandRecords(records);
+        };
+        if (props.creds) {
+            fetchRecords();
+        }
+    }, [props.creds]);
+
     const { children, tabId, index, ...other } = props;
 
-    return (
-        <Page tabId={tabId} index={index}>
-            <div className="page">
-                <h1>Commands</h1>
-                <h3>Hello, World!</h3>
-                {props.creds ? getCommandTable(props.items) : <p>Loading AWS credentials...</p>}
-            </div>
-        </Page>
-    )
+    if (index == tabId) {
+        var table;
+        if (commandRecords) {
+            table = getCommandTable(commandRecords);
+        } else {
+            table = <p>Loading AWS credentials...</p>;
+        }
+        return (
+            <Page tabId={tabId} index={index}>
+                <div className="page">
+                    {table}
+                </div>
+            </Page>
+        )
+    } else {
+        return <div />
+    }
 }
 
 export default CommandPage;

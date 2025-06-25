@@ -10,7 +10,8 @@ export interface CognitoStackProps extends cdk.StackProps {
     authDomainName: string;
     domainName: string;
     authCertificateArn: cm.Certificate;
-    database: cdk.aws_dynamodb.ITable;
+    telemetryDatabase: cdk.aws_dynamodb.ITable;
+    commandDatabase: cdk.aws_dynamodb.ITable;
 }
 
 export class CognitoStack extends cdk.Stack {
@@ -82,7 +83,8 @@ export class CognitoStack extends cdk.Stack {
             ),
         });
 
-        props.database.grantReadData(databaseReadRole);
+        props.telemetryDatabase.grantReadData(databaseReadRole);
+        props.commandDatabase.grantReadData(databaseReadRole);
 
         // new cognito.CfnIdentityPoolRoleAttachment(this, 'IdentityPoolRoleAttachment', {
         //     identityPoolId: identityPool.ref,

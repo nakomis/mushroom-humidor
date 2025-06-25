@@ -2,7 +2,8 @@
     "env": "<ENV>",
     "aws": {
         "region": "<REGION>",
-        "tableName": "<TABLE_NAME>"
+        "telemetryTableName": "<TELEMETRY_TABLE_NAME>",
+        "commandTableName": "<COMMAND_TABLE_NAME>"
     },
     "cognito": {
         "authority": "<AUTHORITY>",

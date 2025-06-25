@@ -42,8 +42,7 @@ function getTelemetryTable(items: TelemetryRecord[]) {
                             <td>{item.humidity}</td>
                             <td>{item.timestamp}</td>
                             <td>{
-                                item.ttl ? new Date(Number(item.ttl) * 1000).toDateString() :
-                                    "immortal"
+                                item.ttl ? item.ttl : "immortal"
                             }</td>
                         </tr>
                     ))

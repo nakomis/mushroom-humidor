@@ -1,17 +1,17 @@
 import {
     Credentials as AWSCredentials,
 } from "@aws-sdk/client-cognito-identity";
-import { TelemetryRecord } from "../dto/TelemetryRecord";
 import { DynamoDBClient, ScanCommand, ScanCommandOutput } from "@aws-sdk/client-dynamodb";
 import Config from "../config/config";
+import { CommandRecord } from "../dto/CommandRecord";
 
-export type TelemetryProps = {
+export type CommandProps = {
     creds: AWSCredentials;
 };
 
-const getTelemetryRecords = async (creds: AWSCredentials) => {
+const getCommandRecords = async (creds: AWSCredentials) => {
     if (!creds) {
-        throw new Error("Credentials are required to fetch telemetry records.");
+        throw new Error("Credentials are required to fetch commadn records.");
     }
     const client = new DynamoDBClient({
         region: Config.aws.region,
@@ -22,17 +22,17 @@ const getTelemetryRecords = async (creds: AWSCredentials) => {
         },
     });
 
-    const command = new ScanCommand({ TableName: Config.aws.telemetryTableName });
-    let records: TelemetryRecord[] = [];
+    const command = new ScanCommand({ TableName: Config.aws.commandTableName });
+    let records: CommandRecord[] = [];
     try {
         const result: ScanCommandOutput = await client.send(command);
         result.Items?.forEach(item => {
-            if (item.deviceId && item.temperature && item.humidity && item.timestamp) {
+            if (item.deviceId && item.timestamp && item.commandType && item.action) {
                 records.push({
                     deviceId: item.deviceId.S!,
-                    temperature: item.temperature.S!,
-                    humidity: item.humidity.S!,
                     timestamp: item.timestamp.S!,
+                    commandType: item.commandType.S!,
+                    action: item.action.S!,
                     ttl: item.ttl ? new Date(Number(item.ttl.N) * 1000).toDateString() : "immortal"
                 });
             }
@@ -44,4 +44,4 @@ const getTelemetryRecords = async (creds: AWSCredentials) => {
     return records;
 }
 
-export { getTelemetryRecords };
+export { getCommandRecords };
