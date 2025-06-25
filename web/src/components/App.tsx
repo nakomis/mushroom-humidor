@@ -263,7 +263,7 @@ const App: React.FC = () => {
     };
 
     const theme = createTheme({
-        
+
         typography: {
             fontFamily: ['Roboto', 'Helvetica', 'Arial', 'sans-serif'].join(','),
             fontSize: 24,
@@ -292,17 +292,25 @@ const App: React.FC = () => {
                     <header className="App-header">
                         <ThemeProvider theme={theme}>
                             <AppBar position="static">
-                                <Box sx={{ flexGrow: 1, backgroundColor: '#1f2329' }}>
-                                    <Tabs value={tabId} onChange={onTabChange} aria-label="basic tabs example" sx={{
-                                        marginLeft: "auto",
-                                        "&& .Mui-selected": { // && are used to increase the specificity
-                                            color: "#d1d1d1",
-                                        },
-                                    }}>
-                                        <Tab label="Telemetry" />
-                                        <Tab label="Commands" />
-                                        <Tab label="Settings" />
-                                    </Tabs>
+                                <Box sx={{ backgroundColor: '#1f2329' }}>
+                                    <div style={{ display: 'flex' }}>
+                                        <Tabs value={tabId} onChange={onTabChange} aria-label="basic tabs example" sx={{
+                                            marginLeft: "0",
+                                            "&& .Mui-selected": { // && are used to increase the specificity
+                                                color: "#d1d1d1",
+                                            },
+                                        }}>
+                                            <Tab label="Telemetry" />
+                                            <Tab label="Commands" />
+                                            <Tab label="Settings" />
+                                        </Tabs>
+                                        <div style={{ flexGrow: 1, display: 'flex', justifyContent: 'flex-end' }}>
+                                            <button type="button" className="btn btn-primary" style={{ marginRight: 10, alignSelf: "anchor-center" }} onClick={() => {
+                                                auth.removeUser();
+                                                signOutRedirect()
+                                            }}>Sign out</button>
+                                        </div>
+                                    </div>
                                 </Box>
                             </AppBar>
                             <Box sx={{ width: '100%' }}>
