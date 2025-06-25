@@ -1,12 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
-import Logout from './Logout';
+import App from './components/App';
+import Logout from './components/Logout';
 import reportWebVitals from './reportWebVitals';
 import { AuthProvider } from "react-oidc-context";
 import { BrowserRouter, Routes, Route } from "react-router";
-import LoggedIn from './LoggedIn';
+import LoggedIn from './components/LoggedIn';
 import Config from './config/config';
 import 'bootstrap/dist/css/bootstrap.css';
 

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import logo from './images/mushroom.png';
+import logo from '@images/mushroom.png';
 import { useAuth } from "react-oidc-context";
 import 'bootstrap/dist/css/bootstrap.css';
 import './App.css';
@@ -10,7 +10,7 @@ import {
     Credentials as AWSCredentials,
 } from "@aws-sdk/client-cognito-identity";
 import { DynamoDBClient, ScanCommand, ScanCommandOutput } from '@aws-sdk/client-dynamodb';
-import Config from './config/config';
+import Config from '../config/config';
 import { AwsClient } from "aws4fetch";
 
 
