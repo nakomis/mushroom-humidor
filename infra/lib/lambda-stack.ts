@@ -13,11 +13,13 @@ export class LambdaStack extends cdk.Stack {
 
     constructor(scope: Construct, id: string, props: LambdaStackProps) {
         super(scope, id, props);
+        
         const thumbmakerLogGroup = new logs.LogGroup(this, 'MushroomThumbMakerLogGroup', {
             logGroupName: '/aws/lambda/MushroomThumbmaker',
             retention: logs.RetentionDays.SIX_MONTHS,
             removalPolicy: cdk.RemovalPolicy.DESTROY,
         });
+
         this.thumbmaker = new NodejsFunction(this, 'MushroomThumbMakerFunction', {
             functionName: 'MushroomThumbmaker',
             runtime: cdk.aws_lambda.Runtime.NODEJS_22_X,

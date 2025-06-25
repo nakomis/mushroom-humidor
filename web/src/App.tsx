@@ -27,21 +27,23 @@ function getTable(items: any[]) {
     return (
         <table className="table table-bordered table-hover table-dark">
             <thead>
-                <th scope='col'>
-                    Device
-                </th>
-                <th scope='col'>
-                    Temp
-                </th>
-                <th scope='col'>
-                    Humidity
-                </th>
-                <th scope='col'>
-                    Timestamp
-                </th>
-                <th scope='col'>
-                    TTL
-                </th>
+                <tr>
+                    <th scope='col'>
+                        Device
+                    </th>
+                    <th scope='col'>
+                        Temp
+                    </th>
+                    <th scope='col'>
+                        Humidity
+                    </th>
+                    <th scope='col'>
+                        Timestamp
+                    </th>
+                    <th scope='col'>
+                        TTL
+                    </th>
+                </tr>
             </thead>
             <tbody>
                 {
@@ -134,7 +136,7 @@ const App: React.FC = () => {
                     service: 'execute-api',
                     region: Config.aws.region,
                 });
-                
+
                 // const res = await awsClient.fetch(Config.aws.apiUri, {
                 //     method: "POST",
                 //     headers: {
