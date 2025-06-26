@@ -67,9 +67,9 @@ const TelemetryPage = (props: TelemetryProps) => {
         }
     }, [props.creds]);
 
-    const { children, tabId, index, ...other } = props;
+    const { tabId, index } = props;
 
-    if (index == tabId) {
+    if (index === tabId) {
         var table;
         if (telemetryRecords) {
             table = getTelemetryTable(telemetryRecords);

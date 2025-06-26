@@ -14,7 +14,7 @@ import Box from '@mui/material/Box';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import { AppBar } from '@mui/material';
-import { createTheme, ThemeProvider, styled } from "@mui/material/styles";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { blue, green } from "@mui/material/colors";
 import TelemetryPage from './pages/TelemetryPage';
 import CommandPage from './pages/CommandPage';
@@ -61,7 +61,6 @@ export async function getAWSCredentialsFromIdToken(
 
 const App: React.FC = () => {
     const auth = useAuth();
-    const [items, setItems] = React.useState<any[]>([]);
     const [creds, setCreds] = React.useState<AWSCredentials | null>(null);
     const [tabId, setTabId] = React.useState(0);
 
@@ -82,8 +81,6 @@ const App: React.FC = () => {
     const signOutRedirect = () => {
         // TODO: Can I just call auth.signoutRedirect()?
         // auth.signoutRedirect();
-        const clientId = Config.cognito;
-        const logoutUri = Config.cognito.logoutUri;
         window.location.href = `https://${Config.cognito.cognitoDomain}/logout?client_id=${Config.cognito.userPoolClientId}&logout_uri=${encodeURIComponent(Config.cognito.logoutUri)}`;
     };
 
@@ -109,18 +106,6 @@ const App: React.FC = () => {
 
     const onTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
         setTabId(newValue);
-    };
-
-    const overrides = {
-        MuiTab: {
-            // general overrides for your material tab component here
-            root: {
-                backgroundColor: 'red',
-                '&$selected': {
-                    backgroundColor: 'blue',
-                }
-            },
-        },
     };
 
     const theme = createTheme({
@@ -175,7 +160,7 @@ const App: React.FC = () => {
                             </AppBar>
                             <Box sx={{ width: '100%' }}>
                                 <TelemetryPage tabId={tabId} index={0} creds={creds}></TelemetryPage>
-                                <CommandPage tabId={tabId} index={1} creds={creds} items={items}></CommandPage>
+                                <CommandPage tabId={tabId} index={1} creds={creds}></CommandPage>
                                 <SettingsPage tabId={tabId} index={2} creds={creds}></SettingsPage>
                             </Box>
                         </ThemeProvider>

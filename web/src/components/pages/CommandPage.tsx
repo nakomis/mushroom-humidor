@@ -9,7 +9,6 @@ import "./CommandPage.css";
 
 type CommandProps = PageProps & {
     creds: AWSCredentials | null;
-    items: any[];
 };
 
 function getCommandTable(items: CommandRecord[]) {
@@ -70,9 +69,9 @@ const CommandPage = (props: CommandProps) => {
         }
     }, [props.creds]);
 
-    const { children, tabId, index, ...other } = props;
+    const { tabId, index } = props;
 
-    if (index == tabId) {
+    if (index === tabId) {
         var table;
         if (commandRecords) {
             table = getCommandTable(commandRecords);
