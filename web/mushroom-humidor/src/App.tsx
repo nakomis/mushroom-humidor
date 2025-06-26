@@ -81,7 +81,7 @@ const App: React.FC = () => {
     const [items, setItems] = React.useState<any[]>([]);
     const [creds, setCreds] = React.useState<AWSCredentials | null>(null);
     useEffect(() => {
-        const fetchCreds = async () => {
+        const fetchData = async () => {
             const credentials = await getAWSCredentialsFromIdToken(
                 Config.aws.region,
                 Config.cognito.identityPoolId,
@@ -90,7 +90,6 @@ const App: React.FC = () => {
             );
             setCreds(credentials ?? null);
             if (credentials) {
-
                 const client = new DynamoDBClient({
                     region: Config.aws.region,
                     credentials: {
@@ -110,21 +109,14 @@ const App: React.FC = () => {
                 }
             }
         };
-        const fetchData = async () => {
-            if (auth.isAuthenticated && auth.user?.id_token) {
-                if (creds) {
-
-                }
-            }
-        };
         if (auth.isAuthenticated && auth.user?.id_token) {
-            fetchCreds();
             fetchData();
         }
     }, [auth.isAuthenticated, auth.user?.id_token]);
 
     const signOutRedirect = () => {
         // TODO: Can I just call auth.signoutRedirect()?
+        // auth.signoutRedirect();
         const clientId = Config.cognito;
         const logoutUri = Config.cognito.logoutUri;
         window.location.href = `https://${Config.cognito.cognitoDomain}/logout?client_id=${Config.cognito.userPoolClientId}&logout_uri=${encodeURIComponent(Config.cognito.logoutUri)}`;
@@ -157,10 +149,6 @@ const App: React.FC = () => {
                     <img src={logo} className="App-logo" alt="logo" />
                     <p>
                         Mushroom Humidor
-                    </p>
-                    <p>
-                        Authenticated as: <i>{auth.user?.profile.email}</i><br></br>
-                        Username: <i>{auth.user?.profile['cognito:username'] as string}</i><br></br>
                     </p>
                     {auth.isAuthenticated ? (
                         <div className="App-credentials">
