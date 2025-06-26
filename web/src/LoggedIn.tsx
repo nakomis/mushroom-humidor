@@ -1,4 +1,6 @@
 import { useAuth } from "react-oidc-context";
+import './LoggedIn.css';
+
 function
  LoggedIn() {
     if (useAuth().isAuthenticated) {
