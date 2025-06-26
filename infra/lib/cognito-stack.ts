@@ -39,8 +39,8 @@ export class CognitoStack extends cdk.Stack {
             },
             generateSecret: false,
             oAuth: {
-                callbackUrls: [`https://${props.domainName}`, `https://${props.domainName}/loggedin`],
-                logoutUrls: [`https://${props.domainName}`, `https://${props.domainName}/logout`]
+                callbackUrls: [`https://${props.domainName}`, `https://${props.domainName}/loggedin`, 'http://localhost:3000/loggedin'],
+                logoutUrls: [`https://${props.domainName}`, `https://${props.domainName}/logout`, 'http://localhost:3000/logout'],
             },
         });
 
