@@ -1,0 +1,11 @@
+#!/bin/bash
+
+FILES=$(git diff --cached --name-status)
+
+if [[ $FILES =~ .drawio ]]; then
+    /Applications/draw.io.app/Contents/MacOS/draw.io -x ./docs/architecture/Mushroom\ Humidor.drawio -f svg -s 1 ./docs/architecture/Mushroom\ Humidor.svg
+fi
+
+git add docs/architecture/Mushroom\ Humidor.svg
+
+exit 0
