@@ -194,7 +194,7 @@ const App: React.FC = () => {
         <div className="App">
             <header className="App-header">
                 <img src={logo} className="App-logo" alt="logo" />
-                <p>Welcome to the mushroom humidor</p>
+                <p>Welcome to the Mushroom Humidor</p>
                 <p>Login below to continue</p>
                 <div>
                     <button type="button" className="btn btn-primary" onClick={() => auth.signinRedirect()}>Sign in</button>
