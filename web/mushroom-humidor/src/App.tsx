@@ -15,11 +15,23 @@ function App() {
     };
 
     if (auth.isLoading) {
-        return <div>Loading...</div>;
+        return (
+            <div className="App">
+                <div className="App-header">
+                    Loading...
+                </div>
+            </div>
+        );
     }
 
     if (auth.error) {
-        return <div>Encountering error... {auth.error.message}</div>;
+        return (
+            <div className="App">
+                <div className="App-header">
+                    Encountering error... {auth.error.message}
+                </div>
+            </div>
+        );
     }
 
     if (auth.isAuthenticated) {
