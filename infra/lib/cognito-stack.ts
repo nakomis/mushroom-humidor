@@ -9,6 +9,7 @@ export interface CognitoStackProps extends cdk.StackProps {
     rootDomain: string;
     authDomainName: string;
     domainName: string;
+    localhostDomain: string;
     authCertificateArn: cm.Certificate;
     telemetryDatabase: cdk.aws_dynamodb.ITable;
     commandDatabase: cdk.aws_dynamodb.ITable;
@@ -34,8 +35,10 @@ export class CognitoStack extends cdk.Stack {
         const callbackUrls: string[] = [`https://${props.domainName}/loggedin`];
         const logoutUrls: string[] = [`https://${props.domainName}/logout`];
         if (process.env.NPM_ENVIRONMENT != 'prod') {
-            callbackUrls.push('http://localhost:3000/loggedin');
-            logoutUrls.push('http://localhost:3000/logout');
+            // For local development, also allow localhost URLs
+            // localhost connect to the sandbox environment
+            callbackUrls.push(`https://${props.localhostDomain}:3000/loggedin`);
+            logoutUrls.push(`https://${props.localhostDomain}:3000/logout`);
         }
 
         this.userPoolClient = new cognito.UserPoolClient(this, 'UserPoolClient', {

@@ -11,7 +11,8 @@ import * as targets from 'aws-cdk-lib/aws-route53-targets';
 export interface CloudfrontStackProps extends cdk.StackProps {
     certificate: cm.Certificate,
     domainName: string,
-    rootDomain: string
+    rootDomain: string,
+    localhostDomain: string,
 }
 
 export class CloudfrontStack extends cdk.Stack {
@@ -62,5 +63,21 @@ export class CloudfrontStack extends cdk.Stack {
             zone: hostedZone,
             target: route53.RecordTarget.fromAlias(new targets.CloudFrontTarget(this.distribution))
         });
+
+        // Localhost records are created in the 'prod' environment
+        // as it has access to the root domain.
+        if (process.env.NPM_ENVIRONMENT == 'prod') {
+            new route53.ARecord(this, `${hostedZone.zoneName}LocalhostAAliasRecord`, {
+                recordName: props.localhostDomain,
+                zone: hostedZone,
+                target: route53.RecordTarget.fromIpAddresses('127.0.0.1')
+            });
+
+            new route53.AaaaRecord(this, `${hostedZone.zoneName}LocalhostAaaaAliasRecord`, {
+                recordName: props.localhostDomain,
+                zone: hostedZone,
+                target: route53.RecordTarget.fromIpAddresses('::1')
+            });
+        }
     }
 }

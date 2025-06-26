@@ -13,6 +13,7 @@ const londonEnv = { env: { account: process.env.CDK_DEFAULT_ACCOUNT, region: pro
 const nvirginiaEnv = { env: { account: process.env.CDK_DEFAULT_ACCOUNT, region: 'us-east-1' } };
 const environmentSubdomain = process.env.NPM_ENVIRONMENT == "prod" ? "" : "sandbox.";
 const rootDomain = `${environmentSubdomain}nakomis.com`;
+const localhostDomain = `mushrooms.localhost.nakomis.com`;
 const domainName = `mushrooms.${environmentSubdomain}nakomis.com`
 const apiDomain = `api.${domainName}`;
 const authDomain = `auth.${domainName}`;
@@ -36,6 +37,7 @@ const cloudfrontStack = new CloudfrontStack(app, 'MushroomCloudfrontStack', {
     certificate: certificateStack.certificate,
     domainName: domainName,
     rootDomain: rootDomain,
+    localhostDomain: localhostDomain,
     crossRegionReferences: true
 });
 const dynamodbStack = new DynamodbStack(app, 'MushroomDynamodbStack', {
@@ -60,6 +62,7 @@ const cognitoStack = new CognitoStack(app, 'MushroomCognitoStack', {
     rootDomain: rootDomain,
     domainName: domainName,
     authDomainName: authDomain,
+    localhostDomain: localhostDomain,
     authCertificateArn: certificateStack.authCertificate,
     crossRegionReferences: true,
     commandDatabase: dynamodbStack.commandTable,
