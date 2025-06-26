@@ -1,8 +1,8 @@
 import React from 'react';
 import logo from './logo.svg';
-import './App.css';
-
 import { useAuth } from "react-oidc-context";
+import 'bootstrap/dist/css/bootstrap.css';
+import './App.css';
 
 function App() {
     const auth = useAuth();
@@ -34,7 +34,7 @@ function App() {
                         Authenticated as: <i>{auth.user?.profile.email}</i><br></br>
                         Username: <i>{auth.user?.profile['cognito:username'] as string}</i><br></br>
                     </p>
-                    <button onClick={() => {
+                    <button type="button" className="btn btn-primary" onClick={() => {
                         auth.removeUser();
                         signOutRedirect()
                     }}>Sign out</button>
@@ -47,24 +47,11 @@ function App() {
         <div className="App">
             <header className="App-header">
                 <img src={logo} className="App-logo" alt="logo" />
-                <p>
-                    Welcome to the mushroom humidor
-                </p>
-                <a
-                    className="App-link"
-                    href="https://reactjs.org"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    Login below to continue
-                </a>
-                <p></p>
-                <button onClick={() => auth.signinRedirect(
-                    {
-                        // redirect_uri: "https://mushrooms.sandbox.nakomis.com/loggedin"
-                    }
-                )}>Sign in</button>
-                <button onClick={() => signOutRedirect()}>Sign out</button>
+                <p>Welcome to the mushroom humidor</p>
+                <p>Login below to continue</p>
+                <div className="App-login">
+                    <button type="button" className="btn btn-primary" onClick={() => auth.signinRedirect()}>Sign in</button>
+                </div>
             </header>
         </div >
     );

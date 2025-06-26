@@ -7,6 +7,7 @@ import reportWebVitals from './reportWebVitals';
 import { AuthProvider } from "react-oidc-context";
 import { BrowserRouter, Routes, Route } from "react-router";
 import LoggedIn from './LoggedIn';
+import 'bootstrap/dist/css/bootstrap.css';
 
 const cognitoAuthConfig = {
     authority: "https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_B1QPS8ffN",
