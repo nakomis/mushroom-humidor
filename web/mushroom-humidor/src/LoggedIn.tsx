@@ -1,8 +1,8 @@
 import { useAuth } from "react-oidc-context";
-
-function LoggedIn() {
+function
+ LoggedIn() {
     if (useAuth().isAuthenticated) {
-        window.location.href = `https://mushrooms.sandbox.nakomis.com/`;
+        window.location.href = '/';
         return <div></div>
     }
     return <div></div>

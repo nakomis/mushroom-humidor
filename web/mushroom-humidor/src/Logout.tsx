@@ -1,6 +1,6 @@
 
 function Logout() {
-    window.location.href = `https://mushrooms.sandbox.nakomis.com/`;
+    window.location.href = '/';
     return <div></div>
 }
 
