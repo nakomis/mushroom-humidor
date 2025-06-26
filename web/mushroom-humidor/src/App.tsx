@@ -1,6 +1,7 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+
 import { useAuth } from "react-oidc-context";
 
 function App() {
@@ -8,7 +9,7 @@ function App() {
 
     const signOutRedirect = () => {
         const clientId = "b8rttvob8pp6inqhdjf471de";
-        const logoutUri = "https://mushrooms.sandbox.nakomis.com";
+        const logoutUri = "https://mushrooms.sandbox.nakomis.com/logout";
         const cognitoDomain = "https://auth.mushrooms.sandbox.nakomis.com";
         window.location.href = `${cognitoDomain}/logout?client_id=${clientId}&logout_uri=${encodeURIComponent(logoutUri)}`;
     };
@@ -60,7 +61,7 @@ function App() {
                 <p></p>
                 <button onClick={() => auth.signinRedirect(
                     {
-                        redirect_uri: "https://mushrooms.sandbox.nakomis.com"
+                        // redirect_uri: "https://mushrooms.sandbox.nakomis.com/loggedin"
                     }
                 )}>Sign in</button>
                 <button onClick={() => signOutRedirect()}>Sign out</button>
