@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import logo from '@images/mushroom.png';
+import logo from '@images/mushroom-red.png';
 import { useAuth } from "react-oidc-context";
 import 'bootstrap/dist/css/bootstrap.css';
 import './App.css';
