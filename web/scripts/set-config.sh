@@ -23,7 +23,9 @@ setValue env $ENV
 
 setValue region $(aws configure get region)
 
-setValue tableName MushroomTelemetry
+setValue telemetryTableName MushroomTelemetry
+
+setValue commandTableName MushroomCommands
 
 USER_POOL_ID=$(aws cognito-idp list-user-pools --max-results 60 | jq -r '.UserPools[] | select(.Name == "MushroomUserPool") | .Id')
 
