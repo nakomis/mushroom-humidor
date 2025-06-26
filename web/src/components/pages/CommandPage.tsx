@@ -5,6 +5,7 @@ import {
 import { CommandRecord } from "../../dto/CommandRecord";
 import { useEffect, useState } from "react";
 import { getCommandRecords } from "../../services/CommandService";
+import "./CommandPage.css";
 
 type CommandProps = PageProps & {
     creds: AWSCredentials | null;
@@ -16,42 +17,44 @@ function getCommandTable(items: CommandRecord[]) {
         return <p>No items found in the table.</p>;
     }
     return (
-        <table className="table table-bordered table-hover table-dark">
-            <thead>
-                <tr>
-                    <th scope='col'>
-                        Device
-                    </th>
-                    <th scope='col'>
-                        Command Type
-                    </th>
-                    <th scope='col'>
-                        Action
-                    </th>
-                    <th scope='col'>
-                        Timestamp
-                    </th>
-                    <th scope='col'>
-                        TTL
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                {
-                    items.map((item, index) => (
-                        <tr key={item.deviceId + '-' + item.timestamp}>
-                            <td key={index}>{item.deviceId}</td>
-                            <td>{item.commandType}</td>
-                            <td>{item.action}</td>
-                            <td>{item.timestamp}</td>
-                            <td>{
-                                item.ttl ? item.ttl : "immortal"
-                            }</td>
-                        </tr>
-                    ))
-                }
-            </tbody>
-        </table>
+        <div className="Command-table-container">
+            <table className="table table-bordered table-hover table-dark">
+                <thead>
+                    <tr>
+                        <th scope='col'>
+                            Device
+                        </th>
+                        <th scope='col'>
+                            Command Type
+                        </th>
+                        <th scope='col'>
+                            Action
+                        </th>
+                        <th scope='col'>
+                            Timestamp
+                        </th>
+                        <th scope='col'>
+                            TTL
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {
+                        items.map((item, index) => (
+                            <tr key={item.deviceId + '-' + item.timestamp}>
+                                <td key={index}>{item.deviceId}</td>
+                                <td>{item.commandType}</td>
+                                <td>{item.action}</td>
+                                <td>{item.timestamp}</td>
+                                <td>{
+                                    item.ttl ? item.ttl : "immortal"
+                                }</td>
+                            </tr>
+                        ))
+                    }
+                </tbody>
+            </table>
+        </div>
     );
 }
 

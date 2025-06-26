@@ -2,6 +2,7 @@ import Page, { PageProps } from "./Page";
 import {
     Credentials as AWSCredentials,
 } from "@aws-sdk/client-cognito-identity";
+import "./SettingsPage.css";
 
 type SettingsProps = PageProps & {
     creds: AWSCredentials | null;

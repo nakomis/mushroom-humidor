@@ -13,8 +13,15 @@ function setValue() {
 
 PARAM=$1
 ENV="${PARAM:=sandbox}"
+
+if [[ $ENV == "localhost" ]]; then
+    export AWS_ENV=sandbox
+else
+    export AWS_ENV=$ENV
+fi
+
 SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
-export AWS_PROFILE=nakom.is-$PARAM
+export AWS_PROFILE=nakom.is-$AWS_ENV
 
 rm -rf $SCRIPT_DIR/../src/config/config.json
 cp $SCRIPT_DIR/../src/config/config.json.template $SCRIPT_DIR/../src/config/config.json
