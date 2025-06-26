@@ -22,29 +22,29 @@ if (process.env.NPM_ENVIRONMENT) {
 }
 
 const app = new cdk.App();
-const certificateStack = new CertificateStack(app, 'CertificateStack', {
+const certificateStack = new CertificateStack(app, 'MushroomCertificateStack', {
     ...nvirginiaEnv,
     domainName: domainName,
     rootDomain: rootDomain
 });
-const cloudfrontStack = new CloudfrontStack(app, 'CloudfrontStack', {
+const cloudfrontStack = new CloudfrontStack(app, 'MushroomCloudfrontStack', {
     ...londonEnv,
     certificate: certificateStack.certificate,
     domainName: domainName,
     rootDomain: rootDomain,
     crossRegionReferences: true
 });
-const lambdaStack = new LambdaStack(app, 'LambdaStack', {
+const lambdaStack = new LambdaStack(app, 'MushroomLambdaStack', {
     ...londonEnv
 });
-const dynamodbStack = new DynamodbStack(app, 'DynamodbStack', {
+const dynamodbStack = new DynamodbStack(app, 'MushroomDynamodbStack', {
     ...londonEnv
 });
-const iotStack = new IoTStack(app, 'IoTStack', {
+const iotStack = new IoTStack(app, 'MushroomIoTStack', {
     ...londonEnv,
     table: dynamodbStack.table
 });
-const cognitoStack = new CognitoStack(app, 'CognitoStack', {
+const cognitoStack = new CognitoStack(app, 'MushroomCognitoStack', {
     ...londonEnv,
     rootDomain: rootDomain,
     domainName: domainName,
