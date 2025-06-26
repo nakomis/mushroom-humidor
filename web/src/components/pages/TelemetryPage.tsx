@@ -1,15 +1,14 @@
-import { ReactNode } from "react";
 import Page, { PageProps } from "./Page";
-import {
-    Credentials as AWSCredentials,
-} from "@aws-sdk/client-cognito-identity";
+import { Credentials as AWSCredentials } from "@aws-sdk/client-cognito-identity";
+import { getTelemetryRecords } from "../../services/TelemetryService";
+import { TelemetryRecord } from "../../dto/TelemetryRecord";
+import { useEffect, useState } from "react";
 
 type TelemetryProps = PageProps & {
     creds: AWSCredentials | null;
-    items: any[];
 };
 
-function getTelemetryTable(items: any[]) {
+function getTelemetryTable(items: TelemetryRecord[]) {
     if (items.length === 0) {
         return <p>No items found in the table.</p>;
     }
@@ -37,13 +36,13 @@ function getTelemetryTable(items: any[]) {
             <tbody>
                 {
                     items.map((item, index) => (
-                        <tr>
-                            <td key={index}>{item.deviceId.S}</td>
-                            <td>{item.temperature.S}</td>
-                            <td>{item.humidity.S}</td>
-                            <td>{item.timestamp.S}</td>
+                        <tr key={item.deviceId + '-' + item.timestamp}>
+                            <td key={index}>{item.deviceId}</td>
+                            <td>{item.temperature}</td>
+                            <td>{item.humidity}</td>
+                            <td>{item.timestamp}</td>
                             <td>{
-                                item.ttl && item.ttl.N ? new Date(Number(item.ttl.N) * 1000).toDateString() :
+                                item.ttl ? new Date(Number(item.ttl) * 1000).toDateString() :
                                     "immortal"
                             }</td>
                         </tr>
@@ -55,17 +54,36 @@ function getTelemetryTable(items: any[]) {
 }
 
 const TelemetryPage = (props: TelemetryProps) => {
+    const [telemetryRecords, setTelemetryRecords] = useState([] as TelemetryRecord[]);
+    useEffect(() => {
+        const fetchRecords = async () => {
+            const records = await getTelemetryRecords(props.creds!!);
+            setTelemetryRecords(records);
+        };
+        if (props.creds) {
+            fetchRecords();
+        }
+    }, [props.creds]);
+
     const { children, tabId, index, ...other } = props;
 
-    return (
-        <Page tabId={tabId} index={index}>
-            <div className="page">
-                <h1>Telemetry</h1>
-                <h3>Hello, World!</h3>
-                {props.creds ? getTelemetryTable(props.items) : <p>Loading AWS credentials...</p>}
-            </div>
-        </Page>
-    )
+    if (index == tabId) {
+        var table;
+        if (telemetryRecords) {
+            table = getTelemetryTable(telemetryRecords);
+        } else {
+            table = <p>Loading AWS credentials...</p>;
+        }
+        return (
+            <Page tabId={tabId} index={index}>
+                <div className="page">
+                    {table}
+                </div>
+            </Page>
+        )
+    } else {
+        return <div />
+    }
 }
 
 export default TelemetryPage;

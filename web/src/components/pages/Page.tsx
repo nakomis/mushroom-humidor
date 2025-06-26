@@ -1,32 +1,25 @@
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import logo from '@images/mushroom.png';
+import { useAuth } from "react-oidc-context";
 export type PageProps = {
     children?: ReactNode;
     index: any;
     tabId: any;
 };
 
-
 const Page = (props: PageProps) => {
     const { children, tabId, index, ...other } = props;
-
+    // useEffect(() => {
+    //     // This effect runs when the component mounts or when tabId changes
+    //     console.log(`Page component mounted or tabId changed: ${tabId}`);
+    // }, [tabId]);
     return (
-        <div
-            // role="tabpanel"
-            hidden={tabId !== index}
-            // id={`vertical-tabpanel-${index}`}
-            aria-labelledby={`vertical-tab-0`}
-            // {...other}
-        >
-            {/* {tabId === index && children} */}
-            {/* {children} */}
+        <div hidden={tabId !== index} aria-labelledby={`vertical-tab-0`}>
             <div className="page">
                 <img src={logo} className="App-logo" alt="logo" />
-                <h1>Welcome to the Page Component {index}</h1>
-                <p>This is a placeholder for your page content.</p>
+                {children}
             </div>
         </div>
-
     );
 }
 

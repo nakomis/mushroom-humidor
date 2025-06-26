@@ -15,7 +15,6 @@ import { AwsClient } from "aws4fetch";
 import Box from '@mui/material/Box';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-import Page from './pages/Page';
 import { AppBar } from '@mui/material';
 import { createTheme, ThemeProvider, styled } from "@mui/material/styles";
 import { blue, green } from "@mui/material/colors";
@@ -76,7 +75,10 @@ const App: React.FC = () => {
     });
 
     useEffect(() => {
-        const fetchData = async () => {
+        if (!auth.user?.id_token) {
+            return;
+        }
+        (async () => {
             const credentials = await getAWSCredentialsFromIdToken(
                 Config.aws.region,
                 Config.cognito.identityPoolId,
@@ -84,52 +86,8 @@ const App: React.FC = () => {
                 auth.user?.id_token || ''
             );
             setCreds(credentials ?? null);
-            if (credentials) {
-                const client = new DynamoDBClient({
-                    region: Config.aws.region,
-                    credentials: {
-                        accessKeyId: credentials.AccessKeyId!,
-                        secretAccessKey: credentials.SecretKey!,
-                        sessionToken: credentials.SessionToken,
-                    },
-                });
-
-                const command = new ScanCommand({ TableName: Config.aws.tableName });
-                try {
-                    const result: ScanCommandOutput = await client.send(command);
-                    setItems(result.Items ?? []);
-                } catch (err) {
-                    console.error("DynamoDB scan error:", err);
-                    setItems([]);
-                }
-
-                const awsClient: AwsClient = new AwsClient({
-                    accessKeyId: credentials.AccessKeyId!,
-                    secretAccessKey: credentials.SecretKey!,
-                    sessionToken: credentials.SessionToken,
-                    service: 'execute-api',
-                    region: Config.aws.region,
-                });
-
-                // const res = await awsClient.fetch(Config.aws.apiUri, {
-                //     method: "POST",
-                //     headers: {
-                //         "Content-Type": "application/json",
-                //     },
-                //     body: JSON.stringify({ message: "Hello from LearnAWS.io" }),
-                // });
-
-                // TODO: Check that API returns 202 Accepted on POST
-                // 
-                // For a PATCH, the response should be 200, with the updated item
-                // in the body
-
-            }
-        };
-        if (auth.isAuthenticated && auth.user?.id_token) {
-            fetchData();
-        }
-    }, [auth.isAuthenticated, auth.user?.id_token]);
+        })();
+    }, [auth.user?.id_token]);
 
     const signOutRedirect = () => {
         // TODO: Can I just call auth.signoutRedirect()?
@@ -228,26 +186,16 @@ const App: React.FC = () => {
                                 </Box>
                             </AppBar>
                             <Box sx={{ width: '100%' }}>
-                                <TelemetryPage tabId={tabId} index={0} creds={creds} items={items}></TelemetryPage>
+                                <TelemetryPage tabId={tabId} index={0} creds={creds}></TelemetryPage>
                                 <CommandPage tabId={tabId} index={1} creds={creds} items={items}></CommandPage>
                                 <SettingsPage tabId={tabId} index={2} creds={creds}></SettingsPage>
                             </Box>
                         </ThemeProvider>
 
-
-                        <p>
-                            Mushroom Humidor
-                        </p>
-                        {auth.isAuthenticated ? (
-                            <div className="App-credentials">
-                                {/* {creds ? getTelemetryTable(items)
-                                    : (
-                                        <p>Loading AWS credentials...</p>
-                                    )} */}
-                            </div>
-                        ) : (
+                        {!auth.isAuthenticated ? (
                             <p>You are not authenticated.</p>
-                        )}
+                        ) : ""
+                        }
                     </header>
                 </div >
             </div>
