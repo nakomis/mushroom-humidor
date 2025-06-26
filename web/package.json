@@ -37,7 +37,8 @@
         "eject": "craco eject",
         "setconfig": "./scripts/set-config.sh",
         "comment": "echo 'TODO: put the deploy logic in a script and get the bucket name from the config file, or from AWS'",
-        "deploySandbox": "npm run setconfig && npm run build && aws s3 sync build/ s3://cloudfrontstack-mushroombucketaf4c3305-r1edystkytlm --delete --cache-control max-age=3600"
+        "deploysandbox": "npm run setconfig -- sandbox && ./scripts/deploysandbox.sh",
+        "deployprod": "npm run setconfig -- prod && ./scripts/deployprod.sh"
     },
     "eslintConfig": {
         "extends": [
