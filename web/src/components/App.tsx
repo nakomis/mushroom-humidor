@@ -9,9 +9,7 @@ import {
     GetCredentialsForIdentityCommand,
     Credentials as AWSCredentials,
 } from "@aws-sdk/client-cognito-identity";
-import { DynamoDBClient, ScanCommand, ScanCommandOutput } from '@aws-sdk/client-dynamodb';
 import Config from '../config/config';
-import { AwsClient } from "aws4fetch";
 import Box from '@mui/material/Box';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
@@ -33,7 +31,6 @@ import SettingsPage from './pages/SettingsPage';
 export async function getAWSCredentialsFromIdToken(
     region: string,
     identityPoolId: string,
-    userPoolId: string,
     idToken: string
 ): Promise<AWSCredentials | undefined> {
     const client = new CognitoIdentityClient({ region });
@@ -76,7 +73,6 @@ const App: React.FC = () => {
             const credentials = await getAWSCredentialsFromIdToken(
                 Config.aws.region,
                 Config.cognito.identityPoolId,
-                Config.cognito.userPoolId,
                 auth.user?.id_token || ''
             );
             setCreds(credentials ?? null);
@@ -128,7 +124,6 @@ const App: React.FC = () => {
     };
 
     const theme = createTheme({
-
         typography: {
             fontFamily: ['Roboto', 'Helvetica', 'Arial', 'sans-serif'].join(','),
             fontSize: 24,
@@ -184,10 +179,10 @@ const App: React.FC = () => {
                                 <SettingsPage tabId={tabId} index={2} creds={creds}></SettingsPage>
                             </Box>
                         </ThemeProvider>
-
-                        {!auth.isAuthenticated ? (
-                            <p>You are not authenticated.</p>
-                        ) : ""
+                        {
+                            !auth.isAuthenticated ? (
+                                <p>You are not authenticated.</p>
+                            ) : ""
                         }
                     </header>
                 </div >
