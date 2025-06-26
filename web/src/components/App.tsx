@@ -12,6 +12,13 @@ import {
 import { DynamoDBClient, ScanCommand, ScanCommandOutput } from '@aws-sdk/client-dynamodb';
 import Config from '../config/config';
 import { AwsClient } from "aws4fetch";
+import Box from '@mui/material/Box';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import Page from './pages/Page';
+import { AppBar, Paper } from '@mui/material';
+import { createTheme, ThemeProvider, styled } from "@mui/material/styles";
+import { blue, green } from "@mui/material/colors";
 
 
 /*
@@ -146,6 +153,14 @@ const App: React.FC = () => {
     const auth = useAuth();
     const [items, setItems] = React.useState<any[]>([]);
     const [creds, setCreds] = React.useState<AWSCredentials | null>(null);
+    const [tabId, setTabId] = React.useState(() => {
+        const hash = window.location.hash.substr(1);
+        if (hash === '') {
+            return 0;
+        }
+        return parseInt(hash);
+    });
+
     useEffect(() => {
         const fetchData = async () => {
             const credentials = await getAWSCredentialsFromIdToken(
@@ -230,30 +245,109 @@ const App: React.FC = () => {
         );
     }
 
+    const onTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
+        setTabId(newValue);
+        window.location.hash = `${newValue}`;
+    };
+
+    const overrides = {
+        MuiTab: {
+            // general overrides for your material tab component here
+            root: {
+                backgroundColor: 'red',
+                '&$selected': {
+                    backgroundColor: 'blue',
+                }
+            },
+        },
+    };
+
+    const theme = createTheme({
+        
+        typography: {
+            fontFamily: ['Roboto', 'Helvetica', 'Arial', 'sans-serif'].join(','),
+            fontSize: 24,
+        },
+        palette: {
+            text: {
+                secondary: '#585c64',
+            },
+            primary: {
+                main: blue["A700"],
+            },
+            secondary: {
+                main: green[900],
+            },
+            background: {
+                default: '#ffffff',
+                paper: '#1e1e1e',
+            },
+        },
+    });
+
     if (auth.isAuthenticated) {
         return (
             <div className="App">
-                <header className="App-header">
-                    <img src={logo} className="App-logo" alt="logo" />
-                    <p>
-                        Mushroom Humidor
-                    </p>
-                    {auth.isAuthenticated ? (
-                        <div className="App-credentials">
-                            {creds ? getTelemetryTable(items)
-                                : (
-                                    <p>Loading AWS credentials...</p>
-                                )}
-                        </div>
-                    ) : (
-                        <p>You are not authenticated.</p>
-                    )}
-                    <button type="button" className="btn btn-primary" onClick={() => {
-                        auth.removeUser();
-                        signOutRedirect()
-                    }}>Sign out</button>
-                </header>
-            </div >
+                <div >
+                    <header className="App-header">
+                        <ThemeProvider theme={theme}>
+                            <AppBar position="static">
+                                <Box sx={{ flexGrow: 1, backgroundColor: '#1f2329' }}>
+                                    <Tabs value={tabId} onChange={onTabChange} aria-label="basic tabs example" sx={{
+                                        marginLeft: "auto",
+                                        "&& .Mui-selected": { // && are used to increase the specificity
+                                            color: "#d1d1d1",
+                                        },
+                                    }}>
+                                        <Tab label="Telemetry" />
+                                        <Tab label="Commands" />
+                                        <Tab label="Settings" />
+                                    </Tabs>
+                                </Box>
+                            </AppBar>
+                            <Box sx={{ width: '100%' }}>
+                                <Page tabId={tabId} index={0}>
+                                    <div className="page">
+                                        <h1>Telemetry</h1>
+                                        {creds ? getTelemetryTable(items) : <p>Loading AWS credentials...</p>}
+                                    </div>
+                                </Page>
+                                <Page tabId={tabId} index={1}>
+                                    <div className="page">
+                                        <h1>Commands</h1>
+                                        {creds ? getCommandTable(items) : <p>Loading AWS credentials...</p>}
+                                    </div>
+                                </Page>
+                                <Page tabId={tabId} index={2}>
+                                    <div className="page">
+                                        <h1>Settings</h1>
+                                        <p>This is the settings page.</p>
+                                    </div>
+                                </Page>
+                            </Box>
+                        </ThemeProvider>
+
+                        <img src={logo} className="App-logo" alt="logo" />
+                        <p>
+                            Mushroom Humidor
+                        </p>
+                        {auth.isAuthenticated ? (
+                            <div className="App-credentials">
+                                {creds ? getTelemetryTable(items)
+                                    : (
+                                        <p>Loading AWS credentials...</p>
+                                    )}
+                            </div>
+                        ) : (
+                            <p>You are not authenticated.</p>
+                        )}
+                        <button type="button" className="btn btn-primary" onClick={() => {
+                            auth.removeUser();
+                            signOutRedirect()
+                        }}>Sign out</button>
+                    </header>
+                </div >
+            </div>
         );
     }
 
