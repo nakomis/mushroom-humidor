@@ -14,6 +14,7 @@ function setValue() {
 PARAM=$1
 ENV="${PARAM:=sandbox}"
 SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
+export AWS_PROFILE=nakom.is-$PARAM
 
 rm -rf $SCRIPT_DIR/../src/config/config.json
 cp $SCRIPT_DIR/../src/config/config.json.template $SCRIPT_DIR/../src/config/config.json

@@ -11,6 +11,14 @@ import {
 } from "@aws-sdk/client-cognito-identity";
 import { DynamoDBClient, ScanCommand, ScanCommandOutput } from '@aws-sdk/client-dynamodb';
 import Config from './config/config';
+import { AwsClient } from "aws4fetch";
+
+
+/*
+    Looking for something interesting in the code?
+    Get the full source code at https://nakom.is/mushroom-code
+    It's an open-source project, so feel free to contribute or use it as you like!
+*/
 
 function getTable(items: any[]) {
     if (items.length === 0) {
@@ -19,23 +27,34 @@ function getTable(items: any[]) {
     return (
         <table className="table table-bordered table-hover table-dark">
             <thead>
-                <tr>
-                    {
-                        Object.keys(items[0]).map((key) => (
-                            <th>{key}</th>
-                        ))
-                    }
-                </tr>
+                <th scope='col'>
+                    Device
+                </th>
+                <th scope='col'>
+                    Temp
+                </th>
+                <th scope='col'>
+                    Humidity
+                </th>
+                <th scope='col'>
+                    Timestamp
+                </th>
+                <th scope='col'>
+                    TTL
+                </th>
             </thead>
             <tbody>
                 {
                     items.map((item, index) => (
                         <tr>
-                            {
-                                Object.values(item).map((value: any, i) => (
-                                    <td key={i}>{value.S}</td>
-                                ))
-                            }
+                            <td key={index}>{item.deviceId.S}</td>
+                            <td>{item.temperature.S}</td>
+                            <td>{item.humidity.S}</td>
+                            <td>{item.timestamp.S}</td>
+                            <td>{
+                                item.ttl && item.ttl.N ? new Date(Number(item.ttl.N) * 1000).toDateString() :
+                                    item.ttl.N
+                            }</td>
                         </tr>
                     ))
                 }
@@ -107,6 +126,28 @@ const App: React.FC = () => {
                     console.error("DynamoDB scan error:", err);
                     setItems([]);
                 }
+
+                const awsClient: AwsClient = new AwsClient({
+                    accessKeyId: credentials.AccessKeyId!,
+                    secretAccessKey: credentials.SecretKey!,
+                    sessionToken: credentials.SessionToken,
+                    service: 'execute-api',
+                    region: Config.aws.region,
+                });
+                
+                // const res = await awsClient.fetch(Config.aws.apiUri, {
+                //     method: "POST",
+                //     headers: {
+                //         "Content-Type": "application/json",
+                //     },
+                //     body: JSON.stringify({ message: "Hello from LearnAWS.io" }),
+                // });
+
+                // TODO: Check that API returns 202 Accepted on POST
+                // 
+                // For a PATCH, the response should be 200, with the updated item
+                // in the body
+
             }
         };
         if (auth.isAuthenticated && auth.user?.id_token) {

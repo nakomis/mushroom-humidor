@@ -10,6 +10,12 @@ import LoggedIn from './LoggedIn';
 import Config from './config/config';
 import 'bootstrap/dist/css/bootstrap.css';
 
+/*
+    Looking for something interesting in the code?
+    Get the full source code at https://nakom.is/mushroom-code
+    It's an open-source project, so feel free to contribute or use it as you like!
+*/
+
 const cognitoAuthConfig = {
     authority: Config.cognito.authority,
     client_id: Config.cognito.userPoolClientId,
