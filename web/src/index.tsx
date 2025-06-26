@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
 import App from './components/App';
 import Logout from './components/Logout';
 import reportWebVitals from './reportWebVitals';
@@ -8,7 +7,10 @@ import { AuthProvider } from "react-oidc-context";
 import { BrowserRouter, Routes, Route } from "react-router";
 import LoggedIn from './components/LoggedIn';
 import Config from './config/config';
+import Footer from './components/Footer';
+import Outline from './components/Outline';
 import 'bootstrap/dist/css/bootstrap.css';
+import './index.css';
 
 /*
     Looking for something interesting in the code?
@@ -30,16 +32,21 @@ const root = ReactDOM.createRoot(
 );
 root.render(
     <React.StrictMode>
-        <AuthProvider {...cognitoAuthConfig}>
-            <BrowserRouter>
-                <Routes>
-                    <Route path="/" element={<App />} />
-                    <Route path="/loggedin" element={<LoggedIn />} />
-                    <Route path="/logout" element={<Logout/>} />
-                    {/* Add more routes as needed */}
-                </Routes>
-            </BrowserRouter>
-        </AuthProvider>
+        <Outline>
+            <div className="main-content">
+                <AuthProvider {...cognitoAuthConfig}>
+                    <BrowserRouter>
+                        <Routes>
+                            <Route path="/" element={<App />} />
+                            <Route path="/loggedin" element={<LoggedIn />} />
+                            <Route path="/logout" element={<Logout />} />
+                            {/* Add more routes as needed */}
+                        </Routes>
+                    </BrowserRouter>
+                </AuthProvider>
+            </div>
+            <Footer/>
+        </Outline>
     </React.StrictMode>
 );
 
