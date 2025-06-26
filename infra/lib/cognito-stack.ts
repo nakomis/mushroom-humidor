@@ -31,6 +31,13 @@ export class CognitoStack extends cdk.Stack {
             removalPolicy: cdk.RemovalPolicy.DESTROY,
         });
 
+        const callbackUrls: string[] = [`https://${props.domainName}/loggedin`];
+        const logoutUrls: string[] = [`https://${props.domainName}/logout`];
+        if (process.env.NPM_ENVIRONMENT != 'prod') {
+            callbackUrls.push('http://localhost:3000/loggedin');
+            logoutUrls.push('http://localhost:3000/logout');
+        }
+
         this.userPoolClient = new cognito.UserPoolClient(this, 'UserPoolClient', {
             userPoolClientName: 'MushroomUserPoolClient',
             userPool: this.userPool,
@@ -40,8 +47,8 @@ export class CognitoStack extends cdk.Stack {
             },
             generateSecret: false,
             oAuth: {
-                callbackUrls: [`https://${props.domainName}`, `https://${props.domainName}/loggedin`, 'http://localhost:3000/loggedin'],
-                logoutUrls: [`https://${props.domainName}`, `https://${props.domainName}/logout`, 'http://localhost:3000/logout'],
+                callbackUrls: callbackUrls,
+                logoutUrls: logoutUrls,
             },
         });
 
