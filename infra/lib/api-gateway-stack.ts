@@ -4,6 +4,7 @@ import * as cm from 'aws-cdk-lib/aws-certificatemanager';
 import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 import * as route53 from 'aws-cdk-lib/aws-route53';
 import { Construct } from 'constructs';
+import * as targets from 'aws-cdk-lib/aws-route53-targets';
 
 export interface ApiGatewayStackProps extends cdk.StackProps {
     rootDomain: string,
@@ -36,17 +37,31 @@ export class ApiGatewayStack extends cdk.Stack {
                 loggingLevel: apigateway.MethodLoggingLevel.INFO,
             },
         }); 
+        
         const commandProcessorIntegration = new apigateway.LambdaIntegration(props.commandProcessor, {
-            proxy: false,
+            proxy: true,
             integrationResponses: [{
                 statusCode: '202',
             }],
         });
+
         mushroomGateway.root.addMethod('POST', commandProcessorIntegration, {
             methodResponses: [{
                 statusCode: '202',
             }],
             authorizationType: apigateway.AuthorizationType.IAM
+        });
+
+        new route53.ARecord(this, `${hostedZone.zoneName}ApiAAliasRecord`, {
+            recordName: props.domainName,
+            zone: hostedZone,
+            target: route53.RecordTarget.fromAlias(new targets.ApiGateway(mushroomGateway)),
+        });
+
+        new route53.AaaaRecord(this, `${hostedZone.zoneName}ApiAaaaAliasRecord`, {
+            recordName: props.domainName,
+            zone: hostedZone,
+            target: route53.RecordTarget.fromAlias(new targets.ApiGateway(mushroomGateway)),
         });
     }
 };
