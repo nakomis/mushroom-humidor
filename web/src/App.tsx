@@ -20,7 +20,7 @@ import { AwsClient } from "aws4fetch";
     It's an open-source project, so feel free to contribute or use it as you like!
 */
 
-function getTable(items: any[]) {
+function getTelemetryTable(items: any[]) {
     if (items.length === 0) {
         return <p>No items found in the table.</p>;
     }
@@ -55,7 +55,52 @@ function getTable(items: any[]) {
                             <td>{item.timestamp.S}</td>
                             <td>{
                                 item.ttl && item.ttl.N ? new Date(Number(item.ttl.N) * 1000).toDateString() :
-                                    item.ttl.N
+                                    "immortal"
+                            }</td>
+                        </tr>
+                    ))
+                }
+            </tbody>
+        </table>
+    );
+}
+
+function getCommandTable(items: any[]) {
+    if (items.length === 0) {
+        return <p>No items found in the table.</p>;
+    }
+    return (
+        <table className="table table-bordered table-hover table-dark">
+            <thead>
+                <tr>
+                    <th scope='col'>
+                        Device
+                    </th>
+                    <th scope='col'>
+                        Command Type
+                    </th>
+                    <th scope='col'>
+                        Action
+                    </th>
+                    <th scope='col'>
+                        Timestamp
+                    </th>
+                    <th scope='col'>
+                        TTL
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {
+                    items.map((item, index) => (
+                        <tr>
+                            <td key={index}>{item.deviceId.S}</td>
+                            <td>{item.temperature.S}</td>
+                            <td>{item.humidity.S}</td>
+                            <td>{item.timestamp.S}</td>
+                            <td>{
+                                item.ttl && item.ttl.N ? new Date(Number(item.ttl.N) * 1000).toDateString() :
+                                    "immortal"
                             }</td>
                         </tr>
                     ))
@@ -195,7 +240,7 @@ const App: React.FC = () => {
                     </p>
                     {auth.isAuthenticated ? (
                         <div className="App-credentials">
-                            {creds ? getTable(items)
+                            {creds ? getTelemetryTable(items)
                                 : (
                                     <p>Loading AWS credentials...</p>
                                 )}
