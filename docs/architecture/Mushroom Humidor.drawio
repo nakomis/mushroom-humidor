@@ -58,9 +58,6 @@
         <mxCell id="OuZ6d5biDsqVV2CmND4--15" value="Parameter Store" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws3.parameter_store;fillColor=#759C3E;gradientColor=none;" parent="1" vertex="1">
           <mxGeometry x="328" y="93" width="61.75" height="89" as="geometry" />
         </mxCell>
-        <mxCell id="OuZ6d5biDsqVV2CmND4--17" value="Identity Pool" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/intune/Azure_AD_Roles_and_Administrators.svg;" parent="1" vertex="1">
-          <mxGeometry x="320.25" y="1073.5" width="64" height="64" as="geometry" />
-        </mxCell>
         <mxCell id="OuZ6d5biDsqVV2CmND4--18" value="Thumbnail Generator" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws3.lambda_function;fillColor=#F58534;gradientColor=none;" parent="1" vertex="1">
           <mxGeometry x="624" y="815" width="69" height="72" as="geometry" />
         </mxCell>
@@ -173,12 +170,13 @@
         <mxCell id="wLzjksfWhElu6e0IMg5p-1" value="ESP32" style="text;strokeColor=none;align=center;fillColor=none;html=1;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
           <mxGeometry x="154.4" y="462.5" width="60" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="G_wfzNQrFulJcbvNpzT2-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.013;entryY=0.556;entryDx=0;entryDy=0;entryPerimeter=0;endArrow=none;startFill=0;" parent="1" source="OuZ6d5biDsqVV2CmND4--9" target="OuZ6d5biDsqVV2CmND4--17" edge="1">
+        <mxCell id="G_wfzNQrFulJcbvNpzT2-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.013;entryY=0.556;entryDx=0;entryDy=0;entryPerimeter=0;endArrow=none;startFill=0;" parent="1" source="OuZ6d5biDsqVV2CmND4--9" edge="1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="260" y="912" />
               <mxPoint x="260" y="1109" />
             </Array>
+            <mxPoint x="321.0820000000001" y="1109.084" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="G_wfzNQrFulJcbvNpzT2-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;endArrow=none;startFill=0;" parent="1" source="OuZ6d5biDsqVV2CmND4--9" target="OuZ6d5biDsqVV2CmND4--10" edge="1">
@@ -205,6 +203,9 @@
               <mxPoint x="260" y="542" />
             </Array>
           </mxGeometry>
+        </mxCell>
+        <mxCell id="Ioj8GCfVYIz0UitYaGht-4" value="Identity Pool" style="sketch=0;aspect=fixed;pointerEvents=1;shadow=0;dashed=0;html=1;strokeColor=none;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;align=center;shape=mxgraph.mscae.enterprise.user_permissions;fillColor=#0078D7;" vertex="1" parent="1">
+          <mxGeometry x="319.34999999999997" y="1072" width="65.8" height="70" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
