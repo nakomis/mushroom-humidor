@@ -2,3 +2,20 @@
     padding-right: 2vw;
     padding-left: 2vw;
 }
+
+.Command-chart-container {
+    padding-right: 2vw;
+    padding-left: 2vw;
+    margin-bottom: 2vh;
+    max-height: 50vh;
+    margin: auto;
+}
+
+.Command-chart-canvas {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 2vh;
+    margin-bottom: 2vh;
+    width: 90vw;
+    max-height: 50vh;
+}

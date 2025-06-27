@@ -3,13 +3,19 @@ import {
     Credentials as AWSCredentials,
 } from "@aws-sdk/client-cognito-identity";
 import { CommandRecord } from "../../dto/CommandRecord";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getCommandRecords } from "../../services/CommandService";
 import "./CommandPage.css";
+import { Chart, ChartData } from 'chart.js/auto';
 
 type CommandProps = PageProps & {
     creds: AWSCredentials | null;
 };
+
+const formatData = (data: number[]): ChartData => ({
+    labels: ["a", "b", "c", "d", "e", "f", "g", "h"],
+    datasets: [{ data }]
+});
 
 function getCommandTable(items: CommandRecord[]) {
     if (items.length === 0) {
@@ -58,7 +64,33 @@ function getCommandTable(items: CommandRecord[]) {
 }
 
 const CommandPage = (props: CommandProps) => {
+    const [data, setData] = useState([0, 1, 2, 3, 4, 5, 6, 7]);
     const [commandRecords, setCommandRecords] = useState([] as CommandRecord[]);
+    const chartRef = useRef<Chart | null>(null);
+
+    useEffect(() => {
+        // must verify that the chart exists
+        if (chartRef.current) {
+            chartRef.current.data = formatData(data);
+            chartRef.current.update();
+        }
+    }, [data]);
+
+    const canvasCallback = (canvas: HTMLCanvasElement | null) => {
+        if (!canvas) return;
+        const ctx = canvas.getContext("2d");
+        if (ctx) {
+            if (chartRef.current) {
+                chartRef.current.destroy();
+            }
+            chartRef.current = new Chart(ctx, {
+                type: "line",
+                data: formatData(data),
+                // options: { responsive: true }
+            });
+        }
+    };
+
     useEffect(() => {
         const fetchRecords = async () => {
             const records = await getCommandRecords(props.creds!!);
@@ -80,6 +112,9 @@ const CommandPage = (props: CommandProps) => {
         }
         return (
             <Page tabId={tabId} index={index}>
+                <div className="Command-chart-container">
+                    <canvas ref={canvasCallback} className="Command-chart-canvas"></canvas>
+                </div>
                 <div className="page">
                     {table}
                 </div>
