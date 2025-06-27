@@ -1,3 +1,4 @@
+import  Config from './config.json'
 
 export interface MushroomConfig {
   env: string;
@@ -17,6 +18,4 @@ export interface MushroomConfig {
   };
 }
 
-let Config: MushroomConfig = require('./config.json');
-
-export default Config;
+export default Config as MushroomConfig;

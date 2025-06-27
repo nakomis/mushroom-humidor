@@ -1,4 +1,22 @@
+.Telemetry-chart-container {
+    padding-right: 2vw;
+    padding-left: 2vw;
+    margin-bottom: 2vh;
+    max-height: auto;
+    margin: auto;
+}
+
+.Telemetry-chart-canvas {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 0vh;
+    margin-bottom: 0vh;
+    width: 90vw;
+    max-height: 60vh;
+}
+
 .Telemetry-table-container {
+    visibility: hidden;
     padding-right: 2vw;
     padding-left: 2vw;
 }
