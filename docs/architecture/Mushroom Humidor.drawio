@@ -131,6 +131,15 @@
             </Array>
           </mxGeometry>
         </mxCell>
+        <mxCell id="Ioj8GCfVYIz0UitYaGht-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="bOqYwsHhhcuyrv4OGNFV-40" target="OuZ6d5biDsqVV2CmND4--7">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="654" y="640" />
+              <mxPoint x="260" y="640" />
+              <mxPoint x="260" y="792" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
         <mxCell id="bOqYwsHhhcuyrv4OGNFV-40" value="Command History" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws3.dynamo_db;fillColor=#2E73B8;gradientColor=none;" parent="1" vertex="1">
           <mxGeometry x="618" y="501" width="72" height="81" as="geometry" />
         </mxCell>
