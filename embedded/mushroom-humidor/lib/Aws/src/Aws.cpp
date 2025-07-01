@@ -3,11 +3,9 @@
 
 Aws::Aws()
 {
-    // Constructor code here
 }
 
 int Aws::connect()
 {
-    Serial.println("In Aws::connect().");
     return 0;
 }
