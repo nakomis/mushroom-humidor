@@ -1,5 +1,5 @@
-#ifndef AWS_H
-#define AWS_H
+#ifndef MUSHROOM_AWS_H
+#define MUSHROOM_AWS_H
 
 #include "secrets.h"
 

@@ -28,6 +28,7 @@ int WifiConnect::connect()
             return 1;
         }
         Serial.print(".");
+        delay(100);
     }
     Serial.println("\nWi-Fi Connected.\n");
     return 0;

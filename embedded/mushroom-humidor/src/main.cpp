@@ -2,14 +2,15 @@
 #include <esp32-hal.h>
 #include <Aws.h>
 #include <WifiConnect.h>
-
+#include <Clock.h>
 
 WifiConnect wifiConnect;
 Aws aws;
+Clock esp32Clock;
 
 void setup()
 {
-    Serial.begin(9600);
+    Serial.begin(115200);
     // Wait for the serial port to become available
     delay(5000);
 
@@ -28,6 +29,7 @@ void loop()
         return;
     }
 
+    Serial.println("Connecting to AWS.");
     if (aws.connect() != 0)
     {
         Serial.println("Failed to connect to AWS.");
@@ -35,6 +37,8 @@ void loop()
         return;
     }
 
+    Serial.println("About to sync clock.");
+    esp32Clock.sync();
     
 
     // Add a delay before the next loop iteration
