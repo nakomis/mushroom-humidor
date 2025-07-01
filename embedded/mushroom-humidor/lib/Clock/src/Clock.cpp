@@ -1,17 +1,32 @@
 #include "Clock.h"
-// #include <RTClib.h> // Include the RTC library if needed
+#include <RTClib.h> // Include the RTC library if needed
 
-// RTC_DS1307 rtc;
-// TwoWire twowire = TwoWire(0);
-// char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
-// const char *ntpServer = "pool.ntp.org";
-// const long gmtOffset_sec = 3600;
-// const int daylightOffset_sec = 3600;
+RTC_DS1307 rtc;
+TwoWire twowire = TwoWire(0);
+char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+const char *ntpServer = "pool.ntp.org";
+const long gmtOffset_sec = 3600;
+const int daylightOffset_sec = 3600;
 
 Clock::Clock()
 {
-    // twowire.setPins(21, 22); // Set SDA and SCL pins for I2C
-    // rtc.begin(&twowire);     // Initialize the RTC
+    Serial.println("Clock constructor Clock::Clock() called.");
+    twowire.setPins(21, 22); // Set SDA and SCL pins for I2C
+    twowire.begin(); // Initialize the I2C bus
+    
+    // if (rtc.begin(&twowire)) {
+    //     Serial.println("RTC initialized successfully.");
+    // } else {
+    //     Serial.println("RTC initialization failed.");
+    // }
+    // if (!rtc.isrunning()) {
+    //     Serial.println("RTC is not running, setting the time.");
+    //     // Set the RTC to the date & time this sketch was compiled
+    //     rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
+    // } else {
+    //     Serial.println("RTC is running.");  
+    // }
+
 }
 
 int Clock::sync()
@@ -22,6 +37,7 @@ int Clock::sync()
     // rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
     // configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
     // printLocalTime();
+    Serial.println("Clock synchronized successfully.");
     return 0;
 }
 
@@ -34,4 +50,5 @@ void Clock::printLocalTime()
     //     return;
     // }
     // Serial.println(&timeinfo, "%A, %B %d %Y %H:%M:%S");
+    Serial.println("printLocalTime() called, but not implemented yet.");
 }

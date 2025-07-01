@@ -22,6 +22,7 @@ void setup()
 
 void loop()
 {
+    Serial.println("loop() called.");
     if (wifiConnect.connect() != 0)
     {
         Serial.println("Failed to connect to Wi-Fi.");
@@ -30,11 +31,16 @@ void loop()
     }
 
     Serial.println("Connecting to AWS.");
-    if (aws.connect() != 0)
+    int i = aws.connect();
+    Serial.print("aws.connect() returned: ");
+    Serial.println(i);
+    if (i != 0)
     {
         Serial.println("Failed to connect to AWS.");
         delay(5000);
         return;
+    } else {
+        Serial.println("Connected to AWS successfully.");
     }
 
     Serial.println("About to sync clock.");
