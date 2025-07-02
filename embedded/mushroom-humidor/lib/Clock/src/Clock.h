@@ -9,9 +9,9 @@ public:
     Clock();
     int sync();
     struct tm getTime();
+    char* getTimeChar();
 
-private:
-    void printLocalTime();
+    private:
 };
 
 #endif
