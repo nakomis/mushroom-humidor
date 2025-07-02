@@ -55,3 +55,17 @@ void Clock::printLocalTime()
 
     return;
 }
+
+struct tm Clock::getTime()
+{
+    tm timeinfo = {};
+    timeinfo.tm_year = myRTC.getYear() + 2000 - 1900; // tm_year is years since 1900
+    timeinfo.tm_mon = myRTC.getMonth(century) - 1; // tm_mon is months since January
+    timeinfo.tm_mday = myRTC.getDate();
+    timeinfo.tm_hour = myRTC.getHour(h12Flag, pmFlag);
+    timeinfo.tm_min = myRTC.getMinute();
+    timeinfo.tm_sec = myRTC.getSecond();
+    timeinfo.tm_isdst = -1; // Not set, let the system determine if DST is in effect
+
+    return timeinfo;
+}
