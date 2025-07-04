@@ -1,0 +1,30 @@
+{
+	"folders": [
+        {
+            "path": "."
+        },
+        {
+            "name": "infra",
+            "path": "infra"
+        },
+        {
+            "name": "thumbmaker",
+            "path": "infra/lambda/thumbmaker"
+        },
+        {
+            "name": "command-processor",
+            "path": "infra/lambda/command-processor"
+        },
+        {
+            "name": "web",
+            "path": "web"
+        }
+    ],
+    "settings": {
+        "jest.disabledWorkspaceFolders": [
+            "mushroom-humidor",
+            "thumbmaker",
+            "command-processor"
+        ]
+    }
+}
