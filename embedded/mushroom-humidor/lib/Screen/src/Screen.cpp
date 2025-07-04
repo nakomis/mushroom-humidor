@@ -56,4 +56,5 @@ void Screen::drawText(const char *text, int x, int y, uint8_t size)
 void Screen::drawImage(const uint8_t *image, int x, int y, int width, int height)
 {
     display.drawXbm(x, y, width, height, image);
+    display.display();
 }
