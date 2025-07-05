@@ -2,8 +2,8 @@
 #define MUSHROOM_AWS_H
 
 #include "secrets.h"
-#include <Bme280.h>
-#include <Clock.h>
+#include "Bme280.h"
+#include "Clock.h"
 
 class Aws
 {

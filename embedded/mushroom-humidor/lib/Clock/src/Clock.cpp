@@ -3,7 +3,6 @@
 #include <time.h>
 
 #include "Clock.h"
-#include "pins.h"
 #include "config.h"
 
 DS3231 *rtc;
@@ -13,10 +12,9 @@ bool h12Flag = false;
 bool pmFlag;
 
 unsigned long *lastNtpSyncMillis = nullptr;
-
 Clock::Clock()
 {
-    rtc = &DS3231();
+    rtc = new DS3231();
 }
 
 int Clock::sync()

@@ -1,11 +1,30 @@
-#include "I2CScan.h"
-#include <pins.h>
 #include <Wire.h>
 #include <Arduino.h>
 
+#include "I2CScan.h"
+#include "config.h"
+
+
+/*
+
+This library is based on the following (MIT Licensed) I2C Scanner by Rob Tillaart:
+
+//
+//    FILE: MultiSpeedI2CScanner.ino
+//  AUTHOR: Rob Tillaart
+// VERSION: 0.2.0
+// PURPOSE: I2C scanner at different speeds
+//    DATE: 2013-11-05
+//     URL: https://github.com/RobTillaart/MultiSpeedI2CScanner
+//     URL: http://forum.arduino.cc/index.php?topic=197360
+//
+
+*/
+
+
 I2CScan::I2CScan()
 {
-    Wire.begin(I2C_SDA, I2C_SCL);
+    Wire.begin(PIN_I2C_SDA, PIN_I2C_SCL);
 }
 
 uint32_t startScan;

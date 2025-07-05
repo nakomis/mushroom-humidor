@@ -4,6 +4,16 @@
 #include <cstdint>
 #include <pgmspace.h>
 
+/*
+
+Original Mushroom icons created by Freepik - Flaticon
+https://www.flaticon.com/free-icons/mushroom 
+
+Resized, and converted to C arrays by Martin Harris
+See https://nakom.is/bmp2xbmp
+
+*/
+
 const uint8_t mushroom_ico32x32_bmp[] PROGMEM =
     {
         0x00, 0x00, 0x00, 0x00,

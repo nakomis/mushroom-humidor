@@ -1,10 +1,21 @@
-#pragma once
+#ifndef MUSHROOM_CONFIG_H
+#define MUSHROOM_CONFIG_H
 
-const unsigned long MQTT_START_TIMEOUT_MILLIS = 20 * 1000;
-const char *MQTT_TOPIC_TELEMETRY = "MushroomThing/telemetry";
-const char *DEVICE_ID = "d1";
+extern const unsigned long MQTT_START_TIMEOUT_MILLIS;
+extern const char *MQTT_TOPIC_TELEMETRY;
+extern const char *DEVICE_ID;
 
-const char *MUSHROOM_NTP_SERVER = "pool.ntp.org";
-const long GMT_OFFSET_SECONDS = 0;
-const int DAYLIGHT_OFFSET_SECONDS = 60 * 60; // 1 hour in seconds
-const unsigned long RTC_NTP_RESYNC_INTERVAL = 20 * 1000;
+extern const char *MUSHROOM_NTP_SERVER;
+extern const long GMT_OFFSET_SECONDS;
+extern const int DAYLIGHT_OFFSET_SECONDS;
+extern const unsigned long RTC_NTP_RESYNC_INTERVAL;
+
+extern const unsigned int SCREEN_WIDTH;
+extern const unsigned int SCREEN_HEIGHT;
+extern const unsigned int SCREEN_ADDRESS;
+
+extern const unsigned int PIN_I2C_SDA;
+extern const unsigned int PIN_I2C_SCL;
+extern const unsigned int PIN_MISTER;
+
+#endif

@@ -12,13 +12,12 @@ MQTTClient *client;
 WiFiClientSecure *net;
 Clock *awsClock;
 Bme280 *awsBme280;
-
 unsigned long lastSentTelemetryMillis = -1;
 
 Aws::Aws(Clock &clock, Bme280 &bme280)
 {
-    client = &MQTTClient(256); // Initialize MQTT client with a buffer size of 256 bytes
-    net = &WiFiClientSecure();
+    client = new MQTTClient(256);
+    net = new WiFiClientSecure();
     awsClock = &clock;
     awsBme280 = &bme280;
     net->setCACert(AWS_CERT_CA);
