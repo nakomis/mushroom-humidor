@@ -32,17 +32,17 @@ void drawTempHumidityCo2()
     switch (scrollPosition)
     {
     case 0:
-        tempTop = 16 + 10;
+        tempTop = 16 + 11;
         humTop = 16 + 10 + 16 + 5;
         co2Top = SCREEN_HEIGHT + 10; // Draw offscreen
         break;
     case 1:
-        humTop = 16 + 10;
+        humTop = 16 + 11;
         co2Top = 16 + 10 + 16 + 5;
         tempTop = SCREEN_HEIGHT + 10; // Draw offscreen
         break;
     case 2:
-        co2Top = 16 + 10;
+        co2Top = 16 + 11;
         tempTop = 16 + 10 + 16 + 5;
         humTop = SCREEN_HEIGHT + 10; // Draw offscreen
         break;
@@ -94,7 +94,7 @@ void loop()
     screen.drawImage(mushroom_ico32x32_bmp, 0, 32, 32, 32);
     screen.drawText(timeOnly, 0, 0, 24, OLEDDISPLAY_TEXT_ALIGNMENT::TEXT_ALIGN_CENTER);
 
-    if (millis() - lastScrollTime > 1000)
+    if (millis() - lastScrollTime > 5000)
     {
         lastScrollTime = millis();
         scrollPosition++;
