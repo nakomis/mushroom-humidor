@@ -58,20 +58,6 @@ const convertToXBmp = (source: File): Promise<string> => {
                     }
                 }
 
-
-                // const flippedArray: Uint8Array = new Uint8Array(outArray.length);
-                // // for (let i: number = 0; i < outArray.length / 2; i++) {
-                // //     let n: number = outArray[i * 2];
-                // //     let m: number = outArray[i * 2 + 1];
-                // //     flippedArray[i * 2 + 1] = n;
-                // //     flippedArray[i * 2] = m;
-                // // }
-                // for (let y: number = 0; y < bmpData.height; y += 1) {
-                //     for (let x: number = 0; x < bmpData.width / 8; x += 1) {
-                //         flippedArray[(y * (bmpData.width / 8)) + x] = outArray[((bmpData.height - y - 1) * (bmpData.width / 8)) + x];
-                //     }
-                // }
-
                 var outString: string = '        ';
                 for (let i: number = 0; i < outArray.length; i++) {
                     outString += '0x' + outArray[i].toString(16).padStart(2, '0').toUpperCase();
