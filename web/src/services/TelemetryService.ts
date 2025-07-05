@@ -30,8 +30,8 @@ const getTelemetryRecords = async (creds: AWSCredentials) => {
             if (item.deviceId && item.temperature && item.humidity && item.timestamp) {
                 records.push({
                     deviceId: item.deviceId.S!,
-                    temperature: item.temperature.S!,
-                    humidity: item.humidity.S!,
+                    temperature: item.temperature.S ? item.temperature.S : item.temperature.N!,
+                    humidity: item.humidity.S ? item.humidity.S : item.humidity.N!,
                     timestamp: item.timestamp.S!,
                     ttl: item.ttl ? new Date(Number(item.ttl.N) * 1000).toDateString() : "immortal"
                 });
