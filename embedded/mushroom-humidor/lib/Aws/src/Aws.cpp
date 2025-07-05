@@ -13,7 +13,7 @@ WiFiClientSecure *net;
 Clock *awsClock;
 Bme280 *awsBme280;
 
-unsigned long lastMillis = -1;
+unsigned long lastSentTelemetryMillis = -1;
 
 Aws::Aws(Clock &clock, Bme280 &bme280)
 {
@@ -30,15 +30,13 @@ Aws::Aws(Clock &clock, Bme280 &bme280)
 
 int Aws::loop()
 {
-    // Connect to the MQTT broker on the AWS endpoint we defined earlier
-    unsigned long startMillis = millis();
-
+    unsigned long startMQConnectMillis = millis();
     if (!client->connected())
     {
         client->begin(AWS_IOT_ENDPOINT, 8883, *net);
         while (!client->connect("MushroomThing"))
         {
-            if (millis() - startMillis > MQTT_START_TIMEOUT_MILLIS)
+            if (millis() - startMQConnectMillis > MQTT_START_TIMEOUT_MILLIS)
             {
                 Serial.println();
                 Serial.println("Bailing out of MQTT Connect");
@@ -48,22 +46,27 @@ int Aws::loop()
         }
     }
 
-    unsigned long millisNow = millis();
-    if ((lastMillis == -1) || (millisNow - lastMillis >= (1000 * 60 * 5)))
+    unsigned long startSendTelemetryMillis = millis();
+    if ((lastSentTelemetryMillis == -1) || (startSendTelemetryMillis - lastSentTelemetryMillis >= (1000 * 60 * 5)))
     {
         Serial.println("Publishing telemetry data...");
+
         tm currentTime = awsClock->getTime();
-        
         time_t epochTime = mktime(&currentTime);
+
         JsonDocument doc;
-        doc["deviceId"] = "d1";
+        doc["deviceId"] = DEVICE_ID;
         doc["timestamp"] = awsClock->getTimeChar();
         doc["humidity"] = awsBme280->getHumidity();
         doc["temperature"] = awsBme280->getTemperature();
+
         char jsonBuffer[512];
         serializeJson(doc, jsonBuffer);
-        client->publish("MushroomThing/telemetry", jsonBuffer);
-        lastMillis = millisNow;
+
+        client->publish(MQTT_TOPIC_TELEMETRY, jsonBuffer);
+
+        lastSentTelemetryMillis = startSendTelemetryMillis;
+
         Serial.println("Published telemetry data");
     }
 
