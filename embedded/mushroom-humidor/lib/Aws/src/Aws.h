@@ -5,6 +5,8 @@
 #include <Bme280.h>
 #include <Clock.h>
 
+const unsigned long MQTT_START_TIMEOUT_MILLIS = 20 * 1000;
+
 class Aws
 {
 public:
