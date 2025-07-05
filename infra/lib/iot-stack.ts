@@ -32,7 +32,7 @@ export class IoTStack extends cdk.Stack {
         // IoT Rule: send all messages from this device to DynamoDB
         new iot.CfnTopicRule(this, 'MushroomThingToDynamoDB', {
             topicRulePayload: {
-                sql: `SELECT * FROM 'MushroomThing/telemetry'`, 
+                sql: `SELECT *, (timestamp() / 1000) + ((525600 / 2) * 60) AS ttl FROM 'MushroomThing/telemetry'`, 
                 actions: [
                     {
                         dynamoDBv2: {
