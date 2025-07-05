@@ -55,7 +55,6 @@
 //     Serial.println();
 // }
 
-
 // void I2Cscan()
 // {
 //     startScan = millis();
@@ -152,7 +151,7 @@
 //     else
 //     {
 //         Serial.println(F("I2C bus initialized successfully."));
-//     }   
+//     }
 //     displayHelp();
 // }
 
@@ -222,18 +221,24 @@
 #include <Screen.h>
 #include <pins.h>
 #include <Bmp280.h>
+#include "images.h"
+#include <Bme280.h>
+#include <I2CScan.h>
+#include <OLEDDisplay.h>
 
 WifiConnect wifiConnect;
-Aws aws;
 Clock esp32Clock;
+Bme280 bme280;
+Aws aws = Aws(esp32Clock, bme280);
 Screen screen;
-Bmp280 bmp280; // Assuming Bmp280 is a class that handles the BMP280 sensor
-long lastPinMillis = 0;
+I2CScan i2cScan;
+unsigned long lastPinMillis = 0;
 uint8_t lastPinValue = HIGH;
 
 void setup()
 {
     Serial.begin(115200);
+    Wire.begin(4, 5); // Set SDA and SCL pins for ESP32
     // Wait for the serial port to become available
     delay(5000);
 
@@ -242,10 +247,6 @@ void setup()
     Serial.println("=== Starting Setup ===");
     Serial.println("======================\n");
     pinMode(MISTER_PIN, OUTPUT);
-}
-
-void loop()
-{
     Serial.println("Looping...");
     if (wifiConnect.connect() != 0)
     {
@@ -254,28 +255,85 @@ void loop()
         return;
     }
 
-    Serial.println("Connected to AWS..");
-    if (aws.connect() != 0)
-    {
-        Serial.println("Failed to connect to AWS.");
-        delay(5000);
-        return;
-    }
+    // Serial.println("Connected to AWS..");
+    // if (aws.connect() != 0)
+    // {
+    //     Serial.println("Failed to connect to AWS.");
+    //     delay(5000);
+    //     return;
+    // }
+
+    i2cScan.scan(); // Scan I2C devices
+}
+
+void loop()
+{
+
+    screen.loop();
+    screen.clearScreen(); // Clear the screen before drawing new content
+    esp32Clock.sync();
+    // tm currentTime = esp32Clock.getTime();
+    char *localTime = esp32Clock.getTimeChar();
+    String timeOnly = String(localTime).substring(11, 19);
+    const char *justTime = timeOnly.c_str();
+    // const char *justTime = (String(localTime).substring(11, 19)).c_str(); // Extract the time part from the string
+
+    // Serial.println("Drawing");
+    // screen.loop(); // Run the screen loop to handle display updates
+    // screen.drawText("20.5° C", 5, 0, 2); // Draw text on the screen
+    // screen.drawText(localTime, 5, 30, 2); // Draw text on the screen
+
+    // unsigned long millisNow = millis();
+    // if ((millisNow - lastPinMillis) >= 1000 * 5) // Every 5 seconds
+    // {
+    //     if (lastPinValue == HIGH)
+    //     {
+    //         digitalWrite(MISTER_PIN, LOW); // Turn the pin LOW
+    //         Serial.println("Pin 18 set to LOW");
+    //         lastPinValue = LOW;
+    //     }
+    //     else
+    //     {
+    //         digitalWrite(MISTER_PIN, HIGH); // Turn the pin HIGH
+    //         Serial.println("Pin 18 set to HIGH");
+    //         lastPinValue = HIGH;
+    //     }
+    //     lastPinMillis = millisNow;
+    // } else {
+    //     Serial.println("Waiting for 5 seconds before toggling pin 18 again.");
+    // }
+
+    screen.drawText(justTime, 0, 0, 24, OLEDDISPLAY_TEXT_ALIGNMENT::TEXT_ALIGN_CENTER); // Draw text on the screen
+    screen.drawImage(mushroom_ico32x32_bmp, 0, 32, 32, 32);                             // Draw an image on the screen
+    // screen.drawImage(mushroom_ico16x16_bmp, 36, 32, 16, 16); // Draw an image on the screen
+
+    bme280.sync();
+    String message = "H: ";
+    message.concat(String(bme280.getHumidity(), 2));
+    message.concat(" %");
+
+    screen.drawText(message.c_str(), 36 + 3, 32, 16);
+
+    message = "T: ";
+    message.concat(String(bme280.getTemperature(), 2));
+    message.concat(" °C");
+    screen.drawText(message.c_str(), 36 + 3, 48, 16);
+    screen.draw();
 
     // Serial.println("Clocking...");
     // esp32Clock.sync();
     // tm currentTime = esp32Clock.getTime();
     // char* localTime = esp32Clock.getTimeChar();
 
-    Serial.println("BMPing...");
-    bmp280.sync(); // Synchronize the BMP280 sensor
-    Serial.println("BMP280 synchronized.");
+    // Serial.println("BMPing...");
+    // bmp280.sync(); // Synchronize the BMP280 sensor
+    // Serial.println("BMP280 synchronized.");
 
-    float temp = bmp280.getTemperature();
-    static char buff[5];
-    snprintf(buff, (sizeof(buff) - 1), "%1$'0.4f", temp);
-    Serial.print("Temperature: ");
-    Serial.println(buff);
+    // float temp = bmp280.getTemperature();
+    // static char buff[5];
+    // snprintf(buff, (sizeof(buff) - 1), "%1$'0.4f", temp);
+    // Serial.print("Temperature: ");
+    // Serial.println(buff);
     /*
     static char buff[64];
     snprintf(buff, (sizeof(buff) - 1), "%1$'0.4d-%2$'0.2d-%3$'0.2dT%4$'0.2d:%5$'0.2d:%6$'0.2dZ", myRTC.getYear() + 2000, myRTC.getMonth(century),
@@ -287,7 +345,7 @@ void loop()
     // screen.drawText("20.5° C", 5, 0, 2); // Draw text on the screen
     // screen.drawText(localTime, 5, 30, 2); // Draw text on the screen
 
-    // long millisNow = millis();
+    // unsigned long millisNow = millis();
     // if ((millisNow - lastPinMillis) >= 1000 * 5) // Every 5 seconds
     // {
     //     if (lastPinValue == HIGH)
@@ -308,5 +366,7 @@ void loop()
     // }
 
     // Add a delay before the next loop iteration
-    delay(500);
+    // while (true)
+    aws.loop();
+    delay(100);
 }
