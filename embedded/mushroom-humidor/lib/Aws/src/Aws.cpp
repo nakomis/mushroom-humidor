@@ -1,60 +1,71 @@
-#include "Aws.h"
-#include "WiFi.h"
+#include <WiFi.h>
 #include <MQTTClient.h>
 #include <WiFiClientSecure.h>
 #include <ArduinoJson.h>
-#include <Clock.h>
 
-#define AWS_IOT_PUBLISH_TOPIC "esp32/pub"
+#include "Aws.h"
+#include "Clock.h"
+#include "config.h"
+#include "secrets.h"
 
-MQTTClient client = MQTTClient(256);
-WiFiClientSecure net = WiFiClientSecure();
+MQTTClient *client;
+WiFiClientSecure *net;
+Clock *awsClock;
+Bme280 *awsBme280;
+unsigned long lastSentTelemetryMillis = -1;
 
-const unsigned long MQTT_START_TIMEOUT_MILLIS = 20 * 1000;
-Clock myClock;
-
-long lastMillis = 0;
-
-Aws::Aws()
+Aws::Aws(Clock &clock, Bme280 &bme280)
 {
+    client = new MQTTClient(256);
+    net = new WiFiClientSecure();
+    awsClock = &clock;
+    awsBme280 = &bme280;
+    net->setCACert(AWS_CERT_CA);
+    net->setCertificate(AWS_CERT_CRT);
+    net->setPrivateKey(AWS_CERT_PRIVATE);
+    client->begin(AWS_IOT_ENDPOINT, 8883, *net);
+    Serial.println("AWS Client initialized");
 }
 
-int Aws::connect()
+int Aws::loop()
 {
-    net.setCACert(AWS_CERT_CA);
-    net.setCertificate(AWS_CERT_CRT);
-    net.setPrivateKey(AWS_CERT_PRIVATE);
-    // Connect to the MQTT broker on the AWS endpoint we defined earlier
-    client.begin(AWS_IOT_ENDPOINT, 8883, net);
-    unsigned long startMillis = millis();
-
-    if (!client.connected())
+    unsigned long startMQConnectMillis = millis();
+    if (!client->connected())
     {
-        while (!client.connect("MushroomThing"))
+        client->begin(AWS_IOT_ENDPOINT, 8883, *net);
+        while (!client->connect("MushroomThing"))
         {
-            if (millis() - startMillis > MQTT_START_TIMEOUT_MILLIS)
+            if (millis() - startMQConnectMillis > MQTT_START_TIMEOUT_MILLIS)
             {
                 Serial.println();
                 Serial.println("Bailing out of MQTT Connect");
-                WiFi.disconnect();
                 return 1;
             }
             Serial.print(".");
         }
     }
 
-    long millisNow = millis();
-    if (millisNow - lastMillis >= 1000 * 60 * 5)
+    unsigned long startSendTelemetryMillis = millis();
+    if ((lastSentTelemetryMillis == -1) || (startSendTelemetryMillis - lastSentTelemetryMillis >= (1000 * 60 * 5)))
     {
+        Serial.println("Publishing telemetry data...");
+
+        tm currentTime = awsClock->getTime();
+        time_t epochTime = mktime(&currentTime);
+
         JsonDocument doc;
-        doc["deviceId"] = "d1";
-        doc["timestamp"] = myClock.getTimeChar();
-        doc["humidity"] = 82.4;
-        doc["temperature"] = 22.5;
+        doc["deviceId"] = DEVICE_ID;
+        doc["timestamp"] = awsClock->getTimeChar();
+        doc["humidity"] = awsBme280->getHumidity();
+        doc["temperature"] = awsBme280->getTemperature();
+
         char jsonBuffer[512];
         serializeJson(doc, jsonBuffer);
-        client.publish("MushroomThing/telemetry", jsonBuffer);
-        lastMillis = millisNow;
+
+        client->publish(MQTT_TOPIC_TELEMETRY, jsonBuffer);
+
+        lastSentTelemetryMillis = startSendTelemetryMillis;
+
         Serial.println("Published telemetry data");
     }
 
