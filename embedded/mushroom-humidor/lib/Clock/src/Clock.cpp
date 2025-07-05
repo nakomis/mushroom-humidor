@@ -22,7 +22,6 @@ Clock::Clock()
 
 int Clock::sync()
 {
-    Wire.begin(4, 5); // Set SDA and SCL pins for ESP32
     if (!hasBeenSet)
     {
         configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
