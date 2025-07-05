@@ -1,9 +1,12 @@
-#include "Aws.h"
-#include "WiFi.h"
+#include <WiFi.h>
 #include <MQTTClient.h>
 #include <WiFiClientSecure.h>
 #include <ArduinoJson.h>
-#include <Clock.h>
+
+#include "Aws.h"
+#include "Clock.h"
+#include "config.h"
+#include "secrets.h"
 
 MQTTClient *client;
 WiFiClientSecure *net;
