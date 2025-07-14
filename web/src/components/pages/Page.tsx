@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import logo from '@images/mushroom-red.png';
+import logo from '../../images/mushroom-red.png';
 import './Page.css';
 export type PageProps = {
     children?: ReactNode;
