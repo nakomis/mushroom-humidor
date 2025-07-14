@@ -6,10 +6,8 @@ import { ConditionalCheckFailedException, DynamoDBClient, ScanCommand, ScanComma
 import { CatadataRecord } from "../dto/CatadataRecord";
 import { UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import {
-  GetObjectCommand,
-  NoSuchKey,
-  S3Client,
-  S3ServiceException,
+    GetObjectCommand,
+    S3Client,
 } from "@aws-sdk/client-s3";
 
 export type CatadataProps = {
@@ -26,12 +24,12 @@ const getCatPicture = async (creds: AWSCredentials, record: CatadataRecord): Pro
         },
     });
     const response = await s3Client.send(
-      new GetObjectCommand({
-        Bucket: "bootbootstraining",
-        Key: record.imageName,
-      }),
+        new GetObjectCommand({
+            Bucket: "bootbootstraining",
+            Key: record.imageName,
+        }),
     );
-    
+
     return response.Body as ReadableStream;
 }
 
@@ -147,4 +145,45 @@ const claimRecord = async (records: CatadataRecord[], creds: AWSCredentials, use
 
     return recordToClaim;
 };
-export { getCatadataRecords, getCatPicture, claimRecord };
+
+const setCatadataRecord = async (creds: AWSCredentials, record: CatadataRecord): Promise<void> => {
+    if (!creds) {
+        throw new Error("Credentials are required to set a catadata record.");
+    }
+    const client = new DynamoDBClient({
+        region: Config.aws.region,
+        credentials: {
+            accessKeyId: creds.AccessKeyId!,
+            secretAccessKey: creds.SecretKey!,
+            sessionToken: creds.SessionToken,
+        },
+    });
+    const command = new UpdateCommand({
+        TableName: "catadata",
+        Key: {
+            imageName: record.imageName,
+            uuid: record.uuid,
+        },
+        UpdateExpression: "SET #cat = :cat, #reviewedAt = :reviewedAt",
+        ExpressionAttributeNames: {
+            "#cat": "cat",
+            "#reviewedAt": "reviewedAt",
+        },
+        ExpressionAttributeValues: {
+            ":cat": record.cat,
+            ":reviewedAt": new Date().toISOString(),
+        },
+        ReturnValues: "ALL_NEW",
+    });
+    try {
+        await client.send(command);
+    } catch (err) {
+        if (err instanceof ConditionalCheckFailedException) {
+            return;
+        }
+        console.error("Error claiming record:", err);
+        throw err;
+    }
+};
+
+export { getCatadataRecords, getCatPicture, claimRecord, setCatadataRecord };

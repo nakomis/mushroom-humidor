@@ -9,7 +9,7 @@ import { PageProps } from "./Page";
 import {
     Credentials as AWSCredentials,
 } from "@aws-sdk/client-cognito-identity";
-import { claimRecord, getCatadataRecords, getCatPicture } from "../../services/CatadataService";
+import { claimRecord, getCatadataRecords, getCatPicture, setCatadataRecord } from "../../services/CatadataService";
 
 type BootBootProps = PageProps & {
     creds: AWSCredentials | null,
@@ -18,7 +18,7 @@ type BootBootProps = PageProps & {
 
 const BootBootsPage = (props: BootBootProps) => {
     const [catadataRecords, setCatadataRecords] = useState<CatadataRecord[]>([]);
-    const [currentRecord, setCurrentRecord] = useState<CatadataRecord | null>(null);
+    var [currentRecord, setCurrentRecord] = useState<CatadataRecord | null>(null);
     const [catPicture, setCatPicture] = useState<string | null>(null);
 
     function getCatReviewer() {
@@ -164,8 +164,16 @@ const BootBootsPage = (props: BootBootProps) => {
     }, [currentRecord]);
 
     function clickCat(cat: string) {
+        if (!currentRecord) {
+            console.error("No current record to update.");
+            return;
+        }
+        currentRecord.cat = cat;
+        currentRecord.reviewedAt = new Date().toISOString();
+        setCatadataRecord(props.creds!, currentRecord)
         setCurrentRecord(null);
         setCatPicture(null);
+        
         (async () => {
             const records = await getCatadataRecords(props.creds!);
             setCatadataRecords(records);
