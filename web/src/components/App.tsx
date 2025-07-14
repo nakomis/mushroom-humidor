@@ -19,6 +19,7 @@ import { blue, green } from "@mui/material/colors";
 import TelemetryPage from './pages/TelemetryPage';
 import CommandPage from './pages/CommandPage';
 import SettingsPage from './pages/SettingsPage';
+import BootBootsPage from './pages/BootBootsPage';
 
 
 /*
@@ -145,6 +146,7 @@ const App: React.FC = () => {
                                                 color: "#d1d1d1",
                                             },
                                         }}>
+                                            <Tab label="Boot Boots" />
                                             <Tab label="Telemetry" />
                                             <Tab label="Commands" />
                                             <Tab label="Settings" />
@@ -159,9 +161,10 @@ const App: React.FC = () => {
                                 </Box>
                             </AppBar>
                             <Box sx={{ width: '100%' }}>
-                                <TelemetryPage tabId={tabId} index={0} creds={creds}></TelemetryPage>
-                                <CommandPage tabId={tabId} index={1} creds={creds}></CommandPage>
-                                <SettingsPage tabId={tabId} index={2} creds={creds}></SettingsPage>
+                                <BootBootsPage tabId={tabId} index={0} creds={creds} username={auth.user?.profile.name || ''}></BootBootsPage>
+                                <TelemetryPage tabId={tabId} index={1} creds={creds}></TelemetryPage>
+                                <CommandPage tabId={tabId} index={2} creds={creds}></CommandPage>
+                                <SettingsPage tabId={tabId} index={3} creds={creds}></SettingsPage>
                             </Box>
                         </ThemeProvider>
                         {

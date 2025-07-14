@@ -4,6 +4,8 @@ import * as cognito from 'aws-cdk-lib/aws-cognito';
 import * as cm from 'aws-cdk-lib/aws-certificatemanager';
 import * as route53 from 'aws-cdk-lib/aws-route53';
 import * as targets from 'aws-cdk-lib/aws-route53-targets';
+import { ITable, Table } from 'aws-cdk-lib/aws-dynamodb';
+import { Bucket } from 'aws-cdk-lib/aws-s3';
 
 export interface CognitoStackProps extends cdk.StackProps {
     rootDomain: string;
@@ -90,8 +92,14 @@ export class CognitoStack extends cdk.Stack {
             ),
         });
 
+        const catadata: ITable =  Table.fromTableName(this, 'CatadataDatabase', 'catadata');
+
+        const catBucket = Bucket.fromBucketName(this, 'CatadataBucket', 'bootbootstraining');
+
         props.telemetryDatabase.grantReadData(databaseReadRole);
         props.commandDatabase.grantReadData(databaseReadRole);
+        catadata.grantReadWriteData(databaseReadRole);
+        catBucket.grantRead(databaseReadRole);
 
         // new cognito.CfnIdentityPoolRoleAttachment(this, 'IdentityPoolRoleAttachment', {
         //     identityPoolId: identityPool.ref,
