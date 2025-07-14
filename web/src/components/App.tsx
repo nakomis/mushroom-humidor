@@ -161,7 +161,7 @@ const App: React.FC = () => {
                                 </Box>
                             </AppBar>
                             <Box sx={{ width: '100%' }}>
-                                <BootBootsPage tabId={tabId} index={0} creds={creds} username={auth.user?.profile.name || ''}></BootBootsPage>
+                                <BootBootsPage tabId={tabId} index={0} creds={creds} username={auth?.user?.profile['cognito:username'] as string || ''}></BootBootsPage>
                                 <TelemetryPage tabId={tabId} index={1} creds={creds}></TelemetryPage>
                                 <CommandPage tabId={tabId} index={2} creds={creds}></CommandPage>
                                 <SettingsPage tabId={tabId} index={3} creds={creds}></SettingsPage>
