@@ -126,8 +126,8 @@ const claimRecord = async (records: CatadataRecord[], creds: AWSCredentials, use
                 "#claimedAt": "claimedAt",
             },
             ExpressionAttributeValues: {
-                ":user": { S: user },
-                ":claimedAt": { S: new Date().toISOString() },
+                ":user": user,
+                ":claimedAt": new Date().toISOString(),
             },
             ReturnValues: "ALL_NEW",
         });
