@@ -38,10 +38,10 @@
         "test": "craco test --watchAll=false",
         "test:watch": "craco test",
         "eject": "react-scripts eject",
-        "setconfig": "./scripts/set-config.sh",
+        "setconfig": "./deployscripts/set-config.sh",
         "comment": "echo 'TODO: put the deploy logic in a script and get the bucket name from the config file, or from AWS'",
-        "deploysandbox": "npm run setconfig -- sandbox && ./scripts/deploysandbox.sh",
-        "deployprod": "npm run setconfig -- prod && ./scripts/deployprod.sh"
+        "deploysandbox": "npm run setconfig -- sandbox && ./deployscripts/deploysandbox.sh",
+        "deployprod": "npm run setconfig -- prod && ./deployscripts/deployprod.sh"
     },
     "eslintConfig": {
         "extends": [
