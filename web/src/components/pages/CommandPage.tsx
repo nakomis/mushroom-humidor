@@ -69,7 +69,7 @@ const CommandPage = (props: CommandProps) => {
         }
     }, [props.creds]);
 
-    const { tabId, index } = props;
+    const { tabId, index, children } = props;
 
     if (index === tabId) {
         var table;
@@ -80,13 +80,19 @@ const CommandPage = (props: CommandProps) => {
         }
         return (
             <Page tabId={tabId} index={index}>
+                <h2>Command Records</h2>
                 <div className="page">
                     {table}
                 </div>
+                {children}
             </Page>
         )
     } else {
-        return <div />
+        return (
+            <Page tabId={tabId} index={index}>
+                {children}
+            </Page>
+        )
     }
 }
 

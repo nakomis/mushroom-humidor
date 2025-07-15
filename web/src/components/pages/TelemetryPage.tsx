@@ -141,7 +141,7 @@ const TelemetryPage = (props: TelemetryProps) => {
         };
     }, [props.creds]);
 
-    const { tabId, index } = props;
+    const { tabId, index, children } = props;
 
     if (index === tabId) {
         return (
@@ -149,10 +149,15 @@ const TelemetryPage = (props: TelemetryProps) => {
                 <div className="Telemetry-chart-container">
                     <canvas ref={canvasCallback} className="Telemetry-chart-canvas"></canvas>
                 </div>
+                {children}
             </Page>
         )
     } else {
-        return <div />
+        return (
+            <Page tabId={tabId} index={index}>
+                {children}
+            </Page>
+        )
     }
 }
 

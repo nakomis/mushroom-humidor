@@ -16,6 +16,7 @@ const SettingsPage = (props: SettingsProps) => {
             <div className="page">
                 <h1>Settings</h1>
                 <h3>Yeah, the settings go here, or something like that</h3>
+                {children}
             </div>
         </Page>
     )
