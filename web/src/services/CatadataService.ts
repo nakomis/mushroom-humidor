@@ -111,6 +111,9 @@ const claimRecord = async (records: CatadataRecord[], creds: AWSCredentials, use
             break;
         }
 
+        testRecord.user = user;
+        testRecord.claimedAt = new Date().toISOString();
+
         const command = new UpdateCommand({
             TableName: "catadata",
             Key: {
@@ -124,8 +127,8 @@ const claimRecord = async (records: CatadataRecord[], creds: AWSCredentials, use
                 "#claimedAt": "claimedAt",
             },
             ExpressionAttributeValues: {
-                ":user": user,
-                ":claimedAt": new Date().toISOString(),
+                ":user": testRecord.user,
+                ":claimedAt": testRecord.claimedAt,
             },
             ReturnValues: "ALL_NEW",
         });
@@ -167,10 +170,14 @@ const setCatadataRecord = async (creds: AWSCredentials, record: CatadataRecord):
         UpdateExpression: "SET #cat = :cat, #reviewedAt = :reviewedAt",
         ExpressionAttributeNames: {
             "#cat": "cat",
+            "#user": "user",
+            "#claimedAt": "claimedAt",
             "#reviewedAt": "reviewedAt",
         },
         ExpressionAttributeValues: {
             ":cat": record.cat,
+            ":user": record.user,
+            ":claimedAt": record.claimedAt,
             ":reviewedAt": new Date().toISOString(),
         },
         ReturnValues: "ALL_NEW",
