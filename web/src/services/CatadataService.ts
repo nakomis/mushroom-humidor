@@ -167,7 +167,7 @@ const setCatadataRecord = async (creds: AWSCredentials, record: CatadataRecord):
             imageName: record.imageName,
             uuid: record.uuid,
         },
-        UpdateExpression: "SET #cat = :cat, #reviewedAt = :reviewedAt",
+        UpdateExpression: "SET #cat = :cat, #reviewedAt = :reviewedAt, #claimedAt = :claimedAt, #user = :user",
         ExpressionAttributeNames: {
             "#cat": "cat",
             "#user": "user",

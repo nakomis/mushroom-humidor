@@ -5,6 +5,7 @@ import tau from '../../images/tau.png';
 import chi from '../../images/chi.png';
 import kappa from '../../images/kappa.png';
 import boots from '../../images/boots.png';
+import wolf from '../../images/Wolf.jpeg';
 import KeyPressComponent from "../KeyPress";
 import Page, { PageProps } from "./Page";
 import {
@@ -23,8 +24,6 @@ const BootBootsPage = (props: BootBootProps) => {
     const [catPicture, setCatPicture] = useState<string | null>(null);
 
     function getCatReviewer() {
-        console.log("getCatReviewer called - catPicture:", !!catPicture);
-
         if (!catPicture) {
             return (
                 <div style={{
@@ -115,9 +114,18 @@ const BootBootsPage = (props: BootBootProps) => {
                         onClick={() => {
                             clickCat("Boots");
                         }}
-                        style={{ width: '200px', height: '100px', backgroundColor: '#3b4048ff', border: 'none', padding: 0, margin: 5 }}
+                        style={{ width: '100px', height: '100px', backgroundColor: '#3b4048ff', border: 'none', padding: 0, margin: 5 }}
                     >
-                        <img src={boots} alt="Boots" style={{ width: '50%', height: '100%' }} />
+                        <img src={boots} alt="Boots" style={{ width: '100%', height: '100%' }} />
+                    </button>
+                    <button
+                        className="btn btn-primary"
+                        onClick={() => {
+                            clickCat("Wolf");
+                        }}
+                        style={{ width: '100px', height: '100px', backgroundColor: '#3b4048ff', border: 'none', padding: 0, margin: 5 }}
+                    >
+                        <img src={wolf} alt="Wolf" style={{ width: '100%', height: '100%' }} />
                     </button>
                     <button
                         className="btn btn-primary"
@@ -187,6 +195,9 @@ const BootBootsPage = (props: BootBootProps) => {
                 break;
             case "n":
                 clickCat("NoCat");
+                break;
+            case "w":
+                clickCat("Wolf");
                 break;
             default:
                 console.log("Unhandled key:", event.key);
