@@ -19,7 +19,6 @@ import { blue, green } from "@mui/material/colors";
 import TelemetryPage from './pages/TelemetryPage';
 import CommandPage from './pages/CommandPage';
 import SettingsPage from './pages/SettingsPage';
-import BootBootsPage from './pages/BootBootsPage';
 
 
 /*
@@ -146,7 +145,6 @@ const App: React.FC = () => {
                                                 color: "#d1d1d1",
                                             },
                                         }}>
-                                            <Tab label="Boot Boots" />
                                             <Tab label="Telemetry" />
                                             <Tab label="Commands" />
                                             <Tab label="Settings" />
@@ -161,10 +159,9 @@ const App: React.FC = () => {
                                 </Box>
                             </AppBar>
                             <Box sx={{ width: '100%' }}>
-                                <BootBootsPage tabId={tabId} index={0} creds={creds} username={auth?.user?.profile['cognito:username'] as string || ''}></BootBootsPage>
-                                <TelemetryPage tabId={tabId} index={1} creds={creds}></TelemetryPage>
-                                <CommandPage tabId={tabId} index={2} creds={creds}></CommandPage>
-                                <SettingsPage tabId={tabId} index={3} creds={creds}></SettingsPage>
+                                <TelemetryPage tabId={tabId} index={0} creds={creds}></TelemetryPage>
+                                <CommandPage tabId={tabId} index={1} creds={creds}></CommandPage>
+                                <SettingsPage tabId={tabId} index={2} creds={creds}></SettingsPage>
                             </Box>
                         </ThemeProvider>
                         {
@@ -176,21 +173,20 @@ const App: React.FC = () => {
                 </div >
             </div>
         );
+    } else {
+        return (
+            <div className="App">
+                <header className="App-header">
+                    <img src={logo} className="App-logo" alt="logo" />
+                    <p>Welcome to the Mushroom Humidor</p>
+                    <p>Login below to continue</p>
+                    <div>
+                        <button type="button" className="btn btn-primary" onClick={() => auth.signinRedirect()}>Sign in</button>
+                    </div>
+                </header>
+            </div >
+        );
     }
-
-    return (
-        <div className="App">
-            <header className="App-header">
-                <img src={logo} className="App-logo" alt="logo" />
-                <p>Welcome to the Mushroom Humidor</p>
-                <p>Login below to continue</p>
-                <div>
-                    <button type="button" className="btn btn-primary" onClick={() => auth.signinRedirect()}>Sign in</button>
-                </div>
-            </header>
-        </div >
-    );
-
 }
 
 export default App;

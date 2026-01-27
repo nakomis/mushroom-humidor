@@ -12,7 +12,6 @@ const Page = (props: PageProps) => {
     return (
         <div className="Page" hidden={tabId !== index} aria-labelledby={`vertical-tab-0`}>
             <div>
-                
                 <img src={logo} className="Page-logo" alt="logo" />
                 {children}
             </div>
