@@ -1,5 +1,6 @@
 #!/usr/local/opt/node/bin/node
 import * as cdk from 'aws-cdk-lib';
+import * as fs from 'fs';
 import { MushroomError } from '../lib/mushroom-error';
 import { CloudfrontStack } from '../lib/cloudfront-stack';
 import { CertificateStack } from '../lib/certificate-stack';
@@ -65,3 +66,7 @@ const cognitoStack = new CognitoStack(app, 'MushroomCognitoStack', {
     commandDatabase: dynamodbStack.commandTable,
     telemetryDatabase: dynamodbStack.telemetryTable,
 });
+
+const { version: infraVersion } = JSON.parse(fs.readFileSync('./version.json', 'utf-8'));
+cdk.Tags.of(app).add('MH-Project', 'mushroom-humidor');
+cdk.Tags.of(app).add('MH-Version', infraVersion);
