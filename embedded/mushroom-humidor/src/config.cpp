@@ -1,7 +1,6 @@
 #include "config.h"
 
 const unsigned long MQTT_START_TIMEOUT_MILLIS = 20 * 1000;
-const char *MQTT_TOPIC_TELEMETRY = "MushroomThing/telemetry";
 const char *DEVICE_ID = "d1";
 
 const char *MUSHROOM_NTP_SERVER = "pool.ntp.org";

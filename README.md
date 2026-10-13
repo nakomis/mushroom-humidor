@@ -1,6 +1,10 @@
 # mushroom-humidor
 Project for creating a temperature and humidity controlled environment for growing mushrooms
 
+## Firmware configuration
+
+The embedded firmware's AWS IoT configuration (`secrets.h`) is generated from the deployed stacks by `embedded/deployscripts/set-config.sh`. See [embedded/README.md](embedded/README.md#configuration).
+
 ## Support
 
 If you find this useful, please consider buying me a coffee:

@@ -33,7 +33,7 @@ int Aws::loop()
     if (!client->connected())
     {
         client->begin(AWS_IOT_ENDPOINT, 8883, *net);
-        while (!client->connect("MushroomThing"))
+        while (!client->connect(AWS_IOT_THING_NAME))
         {
             if (millis() - startMQConnectMillis > MQTT_START_TIMEOUT_MILLIS)
             {
@@ -62,7 +62,7 @@ int Aws::loop()
         char jsonBuffer[512];
         serializeJson(doc, jsonBuffer);
 
-        client->publish(MQTT_TOPIC_TELEMETRY, jsonBuffer);
+        client->publish(AWS_IOT_TOPIC_TELEMETRY, jsonBuffer);
 
         lastSentTelemetryMillis = startSendTelemetryMillis;
 
