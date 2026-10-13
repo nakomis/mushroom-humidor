@@ -2,7 +2,6 @@
 #define MUSHROOM_CONFIG_H
 
 extern const unsigned long MQTT_START_TIMEOUT_MILLIS;
-extern const char *MQTT_TOPIC_TELEMETRY;
 extern const char *DEVICE_ID;
 
 extern const char *MUSHROOM_NTP_SERVER;
