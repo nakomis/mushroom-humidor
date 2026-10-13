@@ -31,3 +31,19 @@ If `WIFI_SSID` / `WIFI_PASSWORD` are not set, the values in an existing `secrets
 
 Use `--dry-run` (or `DRY_RUN=1`) to print the header that would be written, with placeholder
 AWS values, without calling AWS or touching `secrets.h`.
+
+## Message types
+
+Every message the firmware publishes carries a `messageType` field, so consumers can tell
+message kinds apart without inferring them from the payload shape. The values are defined
+in `mushroom-humidor/lib/Aws/src/Aws.h` and mirrored in `infra/lib/iot-stack.ts` and
+`web/src/dto/MessageType.tsx`; keep the three in step when adding one.
+
+| `messageType` | Topic | Payload |
+| --- | --- | --- |
+| `telemetry` | `AWS_IOT_TOPIC_TELEMETRY` | Periodic BME280 reading: `deviceId`, `timestamp`, `humidity`, `temperature` |
+
+Messages from firmware that predates the field carry no `messageType`. The
+`MushroomThingToDynamoDB` IoT rule stores them as `telemetry`, and only stores messages whose
+`messageType` is `telemetry` or missing, so other kinds published to the telemetry topic are
+not mistaken for readings.
