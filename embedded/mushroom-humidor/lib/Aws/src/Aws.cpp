@@ -54,6 +54,7 @@ int Aws::loop()
         time_t epochTime = mktime(&currentTime);
 
         JsonDocument doc;
+        doc["messageType"] = MESSAGE_TYPE_TELEMETRY;
         doc["deviceId"] = DEVICE_ID;
         doc["timestamp"] = awsClock->getTimeChar();
         doc["humidity"] = awsBme280->getHumidity();
