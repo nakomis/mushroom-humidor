@@ -40,3 +40,20 @@ describe('queryAllDevices', () => {
         expect(startKeys).toEqual([{ deviceId: { S: 'd1' }, timestamp: { S: '2026-10-03' } }]);
     });
 });
+
+describe('queryAllDevices cap', () => {
+    it('stops paginating once MAX_ITEMS_PER_DEVICE items are read, keeping the newest', async () => {
+        const { MAX_ITEMS_PER_DEVICE } = jest.requireActual('./DeviceQuery');
+        const page = (start: number) => ({
+            Items: Array.from({ length: MAX_ITEMS_PER_DEVICE / 2 + 1 }, (_, i) => item('d1', String(start - i).padStart(8, '0'))),
+            LastEvaluatedKey: { deviceId: { S: 'd1' } },
+        });
+        const send = jest.fn()
+            .mockResolvedValueOnce(page(99999999))
+            .mockResolvedValueOnce(page(99998000))
+            .mockResolvedValue(page(1));
+        const items = await queryAllDevices({ send } as unknown as DynamoDBClient, 'T', ['d1']);
+        expect(send).toHaveBeenCalledTimes(2);
+        expect(items).toHaveLength(MAX_ITEMS_PER_DEVICE);
+    });
+});

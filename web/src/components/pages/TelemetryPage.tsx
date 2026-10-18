@@ -32,15 +32,22 @@ type TelemetryData = {
     date: string;
 };
 
+/**
+ * Records arrive newest first; the chart's time axis must run oldest to newest, so sort ascending
+ * by timestamp (without mutating the input).
+ */
+export const toChartData = (records: TelemetryRecord[]): TelemetryData[] =>
+    [...records]
+        .sort((a, b) => a.timestamp.localeCompare(b.timestamp))
+        .map(record => ({
+            humidity: Number(record.humidity),
+            temp: Number(record.temperature),
+            date: record.timestamp,
+        }));
+
 const TelemetryPage = (props: TelemetryProps) => {
     const { telemetryRecords } = props;
-    const data = useMemo(() => telemetryRecords.map(record => {
-        return {
-            humidity: Number(record.humidity) as number,
-            temp: Number(record.temperature) as number,
-            date: record.timestamp
-        } as TelemetryData;
-    }), [telemetryRecords]);
+    const data = useMemo(() => toChartData(telemetryRecords), [telemetryRecords]);
     const chartRef = useRef<Chart | null>(null);
 
     useEffect(() => {
