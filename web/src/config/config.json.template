@@ -3,7 +3,8 @@
     "aws": {
         "region": "<REGION>",
         "telemetryTableName": "<TELEMETRY_TABLE_NAME>",
-        "commandTableName": "<COMMAND_TABLE_NAME>"
+        "commandTableName": "<COMMAND_TABLE_NAME>",
+        "deviceIds": ["d1"]
     },
     "cognito": {
         "authority": "<AUTHORITY>",

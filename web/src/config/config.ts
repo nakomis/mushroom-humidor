@@ -5,6 +5,8 @@ export interface MushroomConfig {
     region: string;
     telemetryTableName: string;
     commandTableName: string;
+    // Devices to read telemetry and commands for; defaults to ["d1"] when absent
+    deviceIds?: string[];
   };
   cognito: {
     authority: string;
