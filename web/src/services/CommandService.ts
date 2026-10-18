@@ -1,8 +1,9 @@
 import {
     Credentials as AWSCredentials,
 } from "@aws-sdk/client-cognito-identity";
-import { DynamoDBClient, ScanCommand, ScanCommandOutput } from "@aws-sdk/client-dynamodb";
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import Config from "../config/config";
+import { queryAllDevices } from "./DeviceQuery";
 import { CommandRecord } from "../dto/CommandRecord";
 
 export type CommandProps = {
@@ -22,11 +23,10 @@ const getCommandRecords = async (creds: AWSCredentials) => {
         },
     });
 
-    const command = new ScanCommand({ TableName: Config.aws.commandTableName });
     let records: CommandRecord[] = [];
     try {
-        const result: ScanCommandOutput = await client.send(command);
-        result.Items?.forEach(item => {
+        const items = await queryAllDevices(client, Config.aws.commandTableName);
+        items.forEach(item => {
             if (item.deviceId && item.timestamp && item.commandType && item.action) {
                 records.push({
                     deviceId: item.deviceId.S!,
@@ -38,7 +38,7 @@ const getCommandRecords = async (creds: AWSCredentials) => {
             }
         });
     } catch (err) {
-        console.error("DynamoDB scan error:", err);
+        console.error("DynamoDB query error:", err);
     }
 
     return records;

@@ -5,6 +5,14 @@ import * as cm from 'aws-cdk-lib/aws-certificatemanager';
 import * as route53 from 'aws-cdk-lib/aws-route53';
 import * as targets from 'aws-cdk-lib/aws-route53-targets';
 
+// Least-privilege read access for signed-in web users: no Scan, reads must be keyed on deviceId
+export const DATABASE_READ_ACTIONS = [
+    'dynamodb:Query',
+    'dynamodb:GetItem',
+    'dynamodb:BatchGetItem',
+    'dynamodb:DescribeTable',
+];
+
 export interface CognitoStackProps extends cdk.StackProps {
     rootDomain: string;
     authDomainName: string;
@@ -90,8 +98,8 @@ export class CognitoStack extends cdk.Stack {
             ),
         });
 
-        props.telemetryDatabase.grantReadData(databaseReadRole);
-        props.commandDatabase.grantReadData(databaseReadRole);
+        props.telemetryDatabase.grant(databaseReadRole, ...DATABASE_READ_ACTIONS);
+        props.commandDatabase.grant(databaseReadRole, ...DATABASE_READ_ACTIONS);
 
         // new cognito.CfnIdentityPoolRoleAttachment(this, 'IdentityPoolRoleAttachment', {
         //     identityPoolId: identityPool.ref,

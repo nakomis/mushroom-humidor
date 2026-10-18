@@ -3,8 +3,9 @@ import {
 } from "@aws-sdk/client-cognito-identity";
 import { TelemetryRecord } from "../dto/TelemetryRecord";
 import { parseMessageType } from "../dto/MessageType";
-import { AttributeValue, DynamoDBClient, ScanCommand, ScanCommandOutput } from "@aws-sdk/client-dynamodb";
+import { AttributeValue, DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import Config from "../config/config";
+import { queryAllDevices } from "./DeviceQuery";
 
 export type TelemetryProps = {
     creds: AWSCredentials;
@@ -46,18 +47,17 @@ const getTelemetryRecords = async (creds: AWSCredentials) => {
         },
     });
 
-    const command = new ScanCommand({ TableName: Config.aws.telemetryTableName });
     let records: TelemetryRecord[] = [];
     try {
-        const result: ScanCommandOutput = await client.send(command);
-        result.Items?.forEach(item => {
+        const items = await queryAllDevices(client, Config.aws.telemetryTableName);
+        items.forEach(item => {
             const record = parseTelemetryItem(item);
             if (record) {
                 records.push(record);
             }
         });
     } catch (err) {
-        console.error("DynamoDB scan error:", err);
+        console.error("DynamoDB query error:", err);
     }
 
     return records;
