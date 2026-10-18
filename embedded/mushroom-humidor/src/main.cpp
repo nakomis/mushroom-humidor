@@ -21,6 +21,14 @@ uint8_t lastPinValue = HIGH;
 unsigned long lastScrollTime = 0;
 unsigned int scrollPosition = 0;
 
+const char *BANNER = R"(
+ __  __           _                                 _   _                 _     _
+|  \/  |_   _ ___| |__  _ __ ___   ___  _ __ ___   | | | |_   _ _ __ ___ (_) __| | ___  _ __
+| |\/| | | | / __| '_ \| '__/ _ \ / _ \| '_ ` _ \  | |_| | | | | '_ ` _ \| |/ _` |/ _ \| '__|
+| |  | | |_| \__ \ | | | | | (_) | (_) | | | | | | |  _  | |_| | | | | | | | (_| | (_) | |
+|_|  |_|\__,_|___/_| |_|_|  \___/ \___/|_| |_| |_| |_| |_|\__,_|_| |_| |_|_|\__,_|\___/|_|
+)";
+
 void drawTempHumidityCo2()
 {
     float temperature = bme280.getTemperature();
@@ -61,6 +69,7 @@ void setup()
     delay(5000);
 
     Serial.println("\n\n");
+    Serial.println(BANNER);
     Serial.println("======================");
     Serial.println("=== Starting Setup ===");
     Serial.println("======================\n");
