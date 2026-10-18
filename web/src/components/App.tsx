@@ -19,6 +19,17 @@ import { blue, green } from "@mui/material/colors";
 import TelemetryPage from './pages/TelemetryPage';
 import CommandPage from './pages/CommandPage';
 import SettingsPage from './pages/SettingsPage';
+import DeviceSelector from './DeviceSelector';
+import { TelemetryRecord } from '../dto/TelemetryRecord';
+import { CommandRecord } from '../dto/CommandRecord';
+import { getTelemetryRecords } from '../services/TelemetryService';
+import { getCommandRecords } from '../services/CommandService';
+import {
+    filterByDevice,
+    getDeviceIds,
+    loadSelectedDevice,
+    saveSelectedDevice,
+} from '../services/DeviceSelectionService';
 
 
 /*
@@ -63,6 +74,9 @@ const App: React.FC = () => {
     const auth = useAuth();
     const [creds, setCreds] = React.useState<AWSCredentials | null>(null);
     const [tabId, setTabId] = React.useState(0);
+    const [telemetryRecords, setTelemetryRecords] = React.useState<TelemetryRecord[]>([]);
+    const [commandRecords, setCommandRecords] = React.useState<CommandRecord[]>([]);
+    const [selectedDevice, setSelectedDevice] = React.useState(loadSelectedDevice);
 
     useEffect(() => {
         if (!auth.user?.id_token) {
@@ -77,6 +91,38 @@ const App: React.FC = () => {
             setCreds(credentials ?? null);
         })();
     }, [auth.user?.id_token]);
+
+    useEffect(() => {
+        if (!creds) {
+            return;
+        }
+        (async () => {
+            const [telemetry, commands] = await Promise.all([
+                getTelemetryRecords(creds),
+                getCommandRecords(creds),
+            ]);
+            setTelemetryRecords(telemetry);
+            setCommandRecords(commands);
+        })();
+    }, [creds]);
+
+    const deviceIds = React.useMemo(
+        () => getDeviceIds(telemetryRecords, commandRecords),
+        [telemetryRecords, commandRecords]
+    );
+    const deviceTelemetryRecords = React.useMemo(
+        () => filterByDevice(telemetryRecords, selectedDevice),
+        [telemetryRecords, selectedDevice]
+    );
+    const deviceCommandRecords = React.useMemo(
+        () => filterByDevice(commandRecords, selectedDevice),
+        [commandRecords, selectedDevice]
+    );
+
+    const onDeviceChange = (deviceId: string) => {
+        setSelectedDevice(deviceId);
+        saveSelectedDevice(deviceId);
+    };
 
     const signOutRedirect = () => {
         // TODO: Can I just call auth.signoutRedirect()?
@@ -149,6 +195,11 @@ const App: React.FC = () => {
                                             <Tab label="Commands" />
                                             <Tab label="Settings" />
                                         </Tabs>
+                                        <DeviceSelector
+                                            deviceIds={deviceIds}
+                                            selectedDevice={selectedDevice}
+                                            onChange={onDeviceChange}
+                                        />
                                         <div style={{ flexGrow: 1, display: 'flex', justifyContent: 'flex-end' }}>
                                             <button type="button" className="btn btn-primary" style={{ marginRight: 10, alignSelf: "anchor-center" }} onClick={() => {
                                                 auth.removeUser();
@@ -159,8 +210,8 @@ const App: React.FC = () => {
                                 </Box>
                             </AppBar>
                             <Box sx={{ width: '100%' }}>
-                                <TelemetryPage tabId={tabId} index={0} creds={creds}></TelemetryPage>
-                                <CommandPage tabId={tabId} index={1} creds={creds}></CommandPage>
+                                <TelemetryPage tabId={tabId} index={0} creds={creds} telemetryRecords={deviceTelemetryRecords}></TelemetryPage>
+                                <CommandPage tabId={tabId} index={1} creds={creds} commandRecords={deviceCommandRecords}></CommandPage>
                                 <SettingsPage tabId={tabId} index={2} creds={creds}></SettingsPage>
                             </Box>
                         </ThemeProvider>

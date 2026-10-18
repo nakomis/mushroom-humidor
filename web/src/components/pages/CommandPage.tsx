@@ -3,12 +3,11 @@ import {
     Credentials as AWSCredentials,
 } from "@aws-sdk/client-cognito-identity";
 import { CommandRecord } from "../../dto/CommandRecord";
-import { useEffect, useState } from "react";
-import { getCommandRecords } from "../../services/CommandService";
 import "./CommandPage.css";
 
 type CommandProps = PageProps & {
     creds: AWSCredentials | null;
+    commandRecords: CommandRecord[];
 };
 
 function getCommandTable(items: CommandRecord[]) {
@@ -58,18 +57,7 @@ function getCommandTable(items: CommandRecord[]) {
 }
 
 const CommandPage = (props: CommandProps) => {
-    const [commandRecords, setCommandRecords] = useState([] as CommandRecord[]);
-    useEffect(() => {
-        const fetchRecords = async () => {
-            const records = await getCommandRecords(props.creds!!);
-            setCommandRecords(records);
-        };
-        if (props.creds) {
-            fetchRecords();
-        }
-    }, [props.creds]);
-
-    const { tabId, index, children } = props;
+    const { tabId, index, children, commandRecords } = props;
 
     if (index === tabId) {
         var table;

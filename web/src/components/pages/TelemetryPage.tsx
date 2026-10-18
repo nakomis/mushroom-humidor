@@ -1,13 +1,13 @@
 import Page, { PageProps } from "./Page";
 import { Credentials as AWSCredentials } from "@aws-sdk/client-cognito-identity";
-import { getTelemetryRecords } from "../../services/TelemetryService";
 import { TelemetryRecord } from "../../dto/TelemetryRecord";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { Chart, ChartData } from 'chart.js/auto';
 import "./TelemetryPage.css";
 
 type TelemetryProps = PageProps & {
     creds: AWSCredentials | null;
+    telemetryRecords: TelemetryRecord[];
 };
 
 const formatData = (data: TelemetryData[]): ChartData => ({
@@ -33,8 +33,14 @@ type TelemetryData = {
 };
 
 const TelemetryPage = (props: TelemetryProps) => {
-    const [telemetryRecords, setTelemetryRecords] = useState([] as TelemetryRecord[]);
-    const [data, setData] = useState([] as TelemetryData[]);
+    const { telemetryRecords } = props;
+    const data = useMemo(() => telemetryRecords.map(record => {
+        return {
+            humidity: Number(record.humidity) as number,
+            temp: Number(record.temperature) as number,
+            date: record.timestamp
+        } as TelemetryData;
+    }), [telemetryRecords]);
     const chartRef = useRef<Chart | null>(null);
 
     useEffect(() => {
@@ -43,24 +49,6 @@ const TelemetryPage = (props: TelemetryProps) => {
             chartRef.current.update();
         }
     }, [data]);
-
-    useEffect(() => {
-        if (props.creds) {
-            (async () => {
-                const records = await getTelemetryRecords(props.creds!!);
-                // TODO: Map records to data format
-                const data = records.map(record => {
-                    return {
-                        humidity: Number(record.humidity) as number,
-                        temp: Number(record.temperature) as number,
-                        date: record.timestamp
-                    } as TelemetryData;
-                });
-                setData(data);
-                setTelemetryRecords(records);
-            })();
-        };
-    }, [props.creds]);
 
     const canvasCallback = (canvas: HTMLCanvasElement | null) => {
         if (!canvas) return;
@@ -131,15 +119,6 @@ const TelemetryPage = (props: TelemetryProps) => {
                 });
         }
     };
-
-    useEffect(() => {
-        if (props.creds) {
-            (async () => {
-                const records = await getTelemetryRecords(props.creds!!);
-                setTelemetryRecords(records);
-            })();
-        };
-    }, [props.creds]);
 
     const { tabId, index, children } = props;
 
